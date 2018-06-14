@@ -1,4 +1,6 @@
 <?php
+//$link é a variaveis de conexão
+//mysqli_conect("127.0.0.1","usuario","senha","BASE")
 $link = mysqli_connect("localhost", "root", "", "bd1");
 
 if (!$link) {
@@ -8,7 +10,8 @@ if (!$link) {
     exit;
 }
 
-echo "Sucesso: Sucesso ao conectar-se com a base de dados MySQL." . PHP_EOL;
+//echo "Sucesso: Sucesso ao conectar-se com a base de dados MySQL." . PHP_EOL;
+
 
 
 $result = mysqli_query($link,"SELECT * FROM membros");
