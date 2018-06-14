@@ -11,12 +11,16 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 
 $app->post('/membro', function (Request $request, Response $response, array $args) {
 	$data = $request->getParsedBody();
-	$conn = getConnection();
-	$stmt = $conn->prepare("insert into membro values(?, ?)");
-	$stmt->bind_param('ss', $data['CPF'], $data["Nome"]);
-	$stmt->execute();
+	$mysqli = getConnection();
+	$stmt = $mysqli->prepare("insert into membros values(?, ?)");
+	$stmt->bind_param("ss", $data["cpf"], $data["nome"]);
+	if($stmt->execute()){
+		$response->getBody()->write(json_encode('{"response" : "OK"}'));
+	} else {
+		$response->getBody()->write($stmt->error);
+	}
 	$stmt->close();
-	$response->getBody()->write(json_encode($data));
+	$mysqli->close();
 	return $response;
 });
 
