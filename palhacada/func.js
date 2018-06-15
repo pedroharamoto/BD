@@ -121,7 +121,7 @@ function show_lista_igrejas(){
     //função para listar as igrejas na pagina de membros
     //
     var dados = {
-            "funcao" : 2,
+            "funcao" : 2
     };
     //
     parametros = JSON.stringify(dados);
@@ -138,6 +138,7 @@ function show_lista_igrejas(){
         if (this.readyState == 4 && this.status == 200) {
             //
             //recebo todos o resultado da query realizada, em formato JSON
+            //
             //
             retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
             //
@@ -169,6 +170,70 @@ function show_lista_igrejas(){
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
 
+}
+//
+function show_membros(ordem,membro_igreja_nome,membro_nome){
+    //
+    //função para mostrar os membros de uma igreja
+    //
+    $("#mostra_membros_igrejas").empty();
+    //
+    var dados = {
+            "funcao" : ordem,
+            "membro_igreja_nome" : membro_igreja_nome,
+            "membro_nome" : membro_nome
+    };
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var texto_retorno = ""; //corpo da div
+    //
+    //aqui vai começar o codigo para o AJAX-PHP
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            console.log(this.responseText);
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //
+            //
+            if(retorno.length == 0 || retorno == ""){
+                //não encontrou nenhum resultado
+                texto_retorno += "<p>Não há membros nesta igreja!";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                texto_retorno += '<table class="table table-striped"><thead><tr><th>#</th><th>Nome</th><th>CPF</th></tr></thead>';
+                texto_retorno += '<tbody>';
+                //
+                for (i in retorno) {
+
+                    texto_retorno += '<td>'+ parseInt(parseInt(i)+1) +'</td>';
+                    texto_retorno +='<td>'+retorno[i].nome+'</td>';
+                    texto_retorno +='<td>'+retorno[i].cpf+'</td>';
+                    texto_retorno += '</tr>';
+
+                }
+                texto_retorno += '</tbody></table>';
+            }
+            $("#mostra_membros_igrejas").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
 }
 //
 function show_igrejas(){
@@ -282,39 +347,24 @@ function envia(ordem){
 
     }
     else if(ordem == 57){ //procura um membro de uma igreja dada
-
-        var igreja_nome = $("#proc_membro_igreja").val();
+        //
+        //
+        //
+        var membro_igreja_nome = $("#membro_igreja_nome").val();
         var membro_nome = $("#proc_membro_nome").val();
         //
-        if(!igreja_nome){
+        if (!membro_nome){
+            membro_nome = "";
+        }
+        //
+        if(igreja_nome == 0){
             alert('É necessário informar a igreja');
-            $("#proc_membro_igreja").focus();
+            $("#membro_igreja_nome").focus();
         }
         else{
-            alert('perai');
+            show_membros(ordem,membro_igreja_nome,membro_nome);
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
