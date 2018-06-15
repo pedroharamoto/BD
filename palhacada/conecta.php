@@ -13,11 +13,5 @@ if (!$link) {
 //echo "Sucesso: Sucesso ao conectar-se com a base de dados MySQL." . PHP_EOL;
 
 
-
-$result = mysqli_query($link,"SELECT * FROM membros");
-if (!$result) {
-    die('Invalid query: ' . mysql_error());
-}
-
-mysqli_close($link);
+//mysqli_close($link); é preciso adicionar essa linha no query.php
 ?>
