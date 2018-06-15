@@ -13,10 +13,13 @@ if($ordem == 1){
     //adc uma igreja
     addIgreja($conn,$obj);
 }
-else if ($ordem == 2) {
+else if($ordem == 2) {
     //mostra as igrejas
     mostraIgreja($conn);
-
+}
+else if($ordem == 3){
+    //adc um membro
+    addMembro($conn,$obj);
 }
 //**************************************************************//
 //**************************************************************//
@@ -99,12 +102,51 @@ function addIgreja($conn,$obj){
 //**************************************************************//
 //**************************************************************//
 
-function addMembro(){
+function addMembro($conn,$obj){
+    //
+    //insere um membro
+    //$link é a conexão
+    //
+    $membro_nome        = $obj->membro_nome;
+    $membro_cpf         = $obj->membro_cpf;
+    $membro_nasc        = $obj->membro_nasc;
+    $membro_sexo        = $obj->membro_sexo;
+    $membro_email       = $obj->membro_email;
+    $membro_telefone    = $obj->membro_telefone;
+    $membro_rua         = $obj->membro_rua;
+    $membro_numero      = $obj->membro_numero;
+    $membro_complemento = $obj->membro_complemento;
+    $membro_cep         = $obj->membro_cep;
+    $membro_bairro      = $obj->membro_bairro;
+    $membro_cidade      = $obj->membro_cidade;
+    $membro_uf          = $obj->membro_uf;
 
+    $txt_dados  = "('" . $membro_nome . "',";
+    $txt_dados  .= "" . $membro_cpf . ",";
+    $txt_dados  .= "" . $membro_nasc . ",";
+    $txt_dados  .= "'" . $membro_sexo . "',";
+    $txt_dados  .= "'" . $membro_email . "',";
+    $txt_dados  .= "'" . $membro_telefone . "',";
+    $txt_dados  .= "'" . $membro_rua . "',";
+    $txt_dados  .= "'" . $membro_numero . "',";
+    $txt_dados  .= "'" . $membro_complemento . "',";
+    $txt_dados  .= "'" . $membro_bairro . "',";
+    $txt_dados  .= "'" . $membro_cidade . "',";
+    $txt_dados  .= "'" . $membro_uf . "',";
+    $txt_dados  .= "'" . $membro_cep . "')";
+
+    $sql = "INSERT INTO membros (nome,cpf,data_nasc,sexo,email,telefone,rua,numero,complemento,bairro,cidade,uf,cep) VALUES " . $txt_dados;
+
+    $resultado = exQuery($conn,$sql);
+    //
+    $saida = ["msg"=>$resultado]; //apenas para mandar sempre um json, aqui ainda não é um json
+    //
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
 
 function mostraMembro(){
-    
+
 }
 
 
