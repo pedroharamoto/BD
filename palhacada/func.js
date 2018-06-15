@@ -138,4 +138,7 @@ function envia(ordem){
 
         addIgreja(ordem,igreja_nome,igreja_qte_membros,igreja_rua,igreja_numero,igreja_complemento,igreja_cep,igreja_bairro,igreja_cidade,igreja_uf);
     }
+    else if(ordem == 3){ //adc membro
+
+    }
 }
