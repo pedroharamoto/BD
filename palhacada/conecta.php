@@ -1,17 +1,16 @@
 <?php
-//$link é a variaveis de conexão
-//mysqli_conect("127.0.0.1","usuario","senha","BASE")
-$link = mysqli_connect("localhost", "root", "", "bd1");
 
-if (!$link) {
-    echo "Error: Falha ao conectar-se com o banco de dados MySQL." . PHP_EOL;
-    echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
-    echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
-    exit;
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "bd1";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-//echo "Sucesso: Sucesso ao conectar-se com a base de dados MySQL." . PHP_EOL;
 
-
-//mysqli_close($link); é preciso adicionar essa linha no query.php
 ?>
