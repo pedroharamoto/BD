@@ -1,0 +1,56 @@
+<!-- CORPO DO SITE -->
+<script type="text/javascript">
+  var header = $('#cabecalho');
+
+  header.empty();
+  header.append('<h1>Mostrar membros da igreja do vitor</h1>');
+</script>
+
+<div class="row border-bot">
+  <div class="col-md-12">
+      <p></p>
+  </div>
+</div>
+
+<div class="row">
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Igreja:</span>
+                <input value="igreja" id="proc_membro_igreja" type="text" class="form-control" placeholder="Procure os membros de uma igreja" aria-describedby="basic-addon1">
+            </div>
+        </div>
+        <div class="col-md-6">
+
+            <input class="btn btn-success" id="btn_procura_membros" onclick="envia(57)" type="button" value="Procurar"></input>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <p></p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+          <div id="mostra_igrejas">
+
+              <p></p>
+
+          </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+<script type="text/javascript">
+
+  show_membros();
+
+</script>
