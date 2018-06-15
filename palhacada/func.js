@@ -6,22 +6,48 @@ function carregar(pagina){
   corpo.load(pagina);
 };
 
+function addIgreja(ordem,igreja_nome,igreja_qte_membros,igreja_rua,igreja_numero,igreja_complemento,igreja_cep,igreja_bairro,igreja_cidade,igreja_uf){
+        var dados = {
+                "ordem" : ordem,
+                "igreja_nome" : igreja_nome,
+                "igreja_qte_membros" : igreja_qte_membros,
+                "igreja_rua" : igreja_rua,
+                "igreja_numero" : igreja_numero,
+                "igreja_complemento" : igreja_complemento,
+                "igreja_cep" : igreja_cep,
+                "igreja_bairro" : igreja_bairro,
+                "igreja_cidade" : igreja_cidade,
+                "igreja_uf" : igreja_uf
+        };
+        $.ajax({
+                data:  dados, //dados que serão enviados via AJAX
+                url:   'query.php', //programa php com a query
+                type:  'post', //método de envio
+                beforeSend: function () {
+                        //...
+                },
+                success:  function (response) {
+                        $("#plot").html(response)
+                }
+        });
+}
 function envia(ordem){
 
     if(ordem == 1){ //busca dicotomica
 
-        var fx = $("#fx").val();
-        var a = $("#a").val();
-        var b = $("#b").val();
-        var delta = $("#delta").val();
-        var epsilon = $("#epsilon").val();
-        var retorno = $("#retorno");
-        var passos = $("#plot");
+        var igreja_nome = $("#igreja_nome").val();
+        var igreja_qte_membros = $("#igreja_qte_membros").val();
+        var igreja_rua = $("#igreja_rua").val();
+        var igreja_numero = $("#igreja_numero").val();
+        var igreja_complemento = $("#igreja_complemento").val();
+        var igreja_cep = $("#igreja_cep").val();
+        var igreja_bairro = $("#igreja_bairro").val();
+        var igreja_cidade = $("#igreja_cidade").val();
+        var igreja_uf = $("#igreja_uf").val();
 
-        retorno.empty();
-        passos.empty();
 
-        buscaDicotomica(fx,a,b,delta,epsilon, retorno,passos);
+        addIgreja(ordem,igreja_nome,igreja_qte_membros,igreja_rua,igreja_numero,igreja_complemento,igreja_cep,igreja_bairro,igreja_cidade,igreja_uf);
+
     }
 
     else if(ordem == 2){//busca uniforme
