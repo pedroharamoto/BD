@@ -78,7 +78,7 @@ function addIgreja($conn,$obj){
     $txt_dados  = "('" . $igreja_nome . "',";
     $txt_dados  .= $igreja_qte_membros . ",";
     $txt_dados  .= "'" . $igreja_rua . "',";
-    $txt_dados  .= $igreja_numero . ",";
+    $txt_dados  .= "'" . $igreja_numero . "',";
     $txt_dados  .= "'" . $igreja_complemento . "',";
     $txt_dados  .= "'" . $igreja_bairro . "',";
     $txt_dados  .= "'" . $igreja_cidade . "',";
