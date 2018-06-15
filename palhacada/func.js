@@ -8,6 +8,54 @@ function carregar(pagina){
 //
 //
 //
+function addPastor(ordem,pastores_cpf,pastores_data_posse,pastores_empossador){
+    //função para add um pastor a uma igreja
+    $("#plot").empty();
+    //
+    var dados = {
+        "funcao" : ordem,
+        "pastores_data_posse" : pastores_data_posse,
+        "pastores_empossador" : pastores_empossador,
+        "pastores_cpf" : pastores_cpf
+    }
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var texto_retorno = "";
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            retorno = this.responseText;
+            //
+            //
+            retorno = JSON.parse(retorno);
+            //
+            //
+            if(retorno.msg === false){
+                texto_retorno = "ERRO!<br>"+pastores_cpf+" já existe!";
+            }
+            else{
+                texto_retorno = "Pastor " + pastores_cpf + " cadastrado!";
+            }
+            //
+            $("#plot").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+
+}
+//
+//
+//
 function addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,membro_sexo,membro_email,membro_telefone,membro_rua,membro_numero,membro_complemento,membro_cep,membro_bairro,membro_cidade,membro_uf){
     //função para add um membro
     $("#plot").empty();
@@ -48,7 +96,7 @@ function addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,m
             }
             else{
                 console.log(retorno);
-                texto_retorno = "Membro " + retorno.msg + " cadastrado!";
+                texto_retorno = "Membro " + membro_cpf + " cadastrado!";
             }
             //
             $("#plot").append(texto_retorno);
@@ -60,9 +108,7 @@ function addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,m
     xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
-
 }
-
 //
 //
 //
@@ -364,7 +410,24 @@ function envia(ordem){
         else{
             show_membros(ordem,membro_igreja_nome,membro_nome);
         }
+    }
+    else if(ordem == 4){ //add um pastor a igreja
+        //
+        //
+        //
+        var pastores_cpf = $("#pastores_cpf").val();
+        var pastores_data_posse = $("#pastores_data_posse").val();
+        var pastores_empossador = $("#pastores_empossador").val();
+        //
+        if(!pastores_cpf){
+            alert('É necessário informar um CPF');
+            $("#membro_cpf").focus();
+            //
+            return;
+        }
+        else{
+            addPastor(ordem,pastores_cpf,pastores_data_posse,pastores_empossador);
+        }
 
     }
-
 }

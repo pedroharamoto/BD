@@ -8,7 +8,6 @@ include "conecta.php";
 $obj = json_decode($_POST["data"], false);
 $ordem = $obj->funcao;
 
-
 if($ordem == 1){
     //adc uma igreja
     addIgreja($conn,$obj);
@@ -24,6 +23,10 @@ else if($ordem == 3){
 else if($ordem == 57){
     //mostra um membro de uma igreja
     mostraMembro($conn,$obj);
+}
+else if($ordem == 4){
+    //add um pastor
+    addPastor($conn,$obj);
 }
 //**************************************************************//
 //**************************************************************//
@@ -148,7 +151,7 @@ function addMembro($conn,$obj){
 
     $txt_dados  = "('" . $membro_nome . "',";
     $txt_dados  .= "" . $membro_cpf . ",";
-    $txt_dados  .= "" . $membro_nasc . ",";
+    $txt_dados  .= "DATE('" . $membro_nasc . "'),";
     $txt_dados  .= "'" . $membro_sexo . "',";
     $txt_dados  .= "'" . $membro_email . "',";
     $txt_dados  .= "'" . $membro_telefone . "',";
@@ -183,10 +186,35 @@ function addMembro($conn,$obj){
     //
     echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
+//**************************************************************//
+//**************************************************************//
+//
+//FUNÇÕES PARA PASTOR
+//
+//**************************************************************//
+//**************************************************************//
+function addPastor($conn,$obj){
+    //
+    //insere um pastor
+    //$link é a conexão
+    //
+    $pastores_data_posse        = $obj->pastores_data_posse;
+    $pastores_empossador        = $obj->pastores_empossador;
+    $pastores_cpf               = $obj->pastores_cpf;
 
+    $txt_dados  = "(DATE('" . $pastores_data_posse . "'),";
+    $txt_dados  .= "'" . $pastores_empossador . "',";
+    $txt_dados  .= "" . $pastores_cpf . ")";
 
+    $sql = "INSERT INTO pastores (data_posse,empossador,cpf) VALUES " . $txt_dados;
 
-
+    $resultado = exQuery($conn,$sql);
+    //
+    $saida = ["msg"=>$resultado]; //apenas para mandar sempre um json, aqui ainda não é um json
+    //
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
+}
 
 
 
