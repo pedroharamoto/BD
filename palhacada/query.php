@@ -1,40 +1,64 @@
 <?php
+header("Content-Type: application/json; charset=UTF-8");
 
 include "conecta.php";
 
-$ordem = $_POST["ordem"];
+//**************************************************************//
+
+$obj = json_decode($_POST["data"], false);
+$ordem = $obj->funcao;
+
 
 if($ordem == 1){
-    addIgreja($link);
+    //adc uma igreja
+    addIgreja($conn,$obj);
 }
+else if ($ordem == 2) {
+    //mostra as igrejas
+    mostraIgreja($conn);
 
-function exQuery($link, $txt){
+}
+//**************************************************************//
+function exQuery($conn, $sql){
     //função para executar uma query
     //$link é a conexão
     //$txt é a query
 
-    $query = mysqli_query($link,$txt);
+    $result = $conn->query($sql);
 
-    if (!$query) {
-        die('Invalid query: ' . mysql_error());
-    }
+    return $result;
+}
+//
+function mostraIgreja($conn){
+    //
+    //mostra as igrejas
+    //$link é a conexao
+    //
+    $sql = "SELECT * FROM igreja";
+    //
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 
 }
-
-function addIgreja($link){
+//
+function addIgreja($conn,$obj){
     //
     //insere uma igreja
     //$link é a conexão
     //
-    $igreja_nome        = $_POST["igreja_nome"];
-    $igreja_qte_membros = $_POST["igreja_qte_membros"];
-    $igreja_rua         = $_POST["igreja_rua"];
-    $igreja_numero      = $_POST["igreja_numero"];
-    $igreja_complemento = $_POST["igreja_complemento"];
-    $igreja_cep         = $_POST["igreja_cep"];
-    $igreja_bairro      = $_POST["igreja_bairro"];
-    $igreja_cidade      = $_POST["igreja_cidade"];
-    $igreja_uf          = $_POST["igreja_uf"];
+    $igreja_nome        = $obj->igreja_nome;
+    $igreja_qte_membros = $obj->igreja_qte_membros;
+    $igreja_rua         = $obj->igreja_rua;
+    $igreja_numero      = $obj->igreja_numero;
+    $igreja_complemento = $obj->igreja_complemento;
+    $igreja_cep         = $obj->igreja_cep;
+    $igreja_bairro      = $obj->igreja_bairro;
+    $igreja_cidade      = $obj->igreja_cidade;
+    $igreja_uf          = $obj->igreja_uf;
 
     $txt_dados  = "('" . $igreja_nome . "',";
     $txt_dados  .= $igreja_qte_membros . ",";
@@ -46,15 +70,18 @@ function addIgreja($link){
     $txt_dados  .= "'" . $igreja_uf . "',";
     $txt_dados  .= "'" . $igreja_cep . "')";
 
-    $txt_query = "INSERT INTO igreja (nome,n_membros,rua,numero,complemento,bairro,cidade,uf,cep) VALUES " . $txt_dados;
+    $sql = "INSERT INTO igreja (nome,n_membros,rua,numero,complemento,bairro,cidade,uf,cep) VALUES " . $txt_dados;
 
-    exQuery($link,$txt_query);
+    $resultado = exQuery($conn,$sql);
+    //
+    $saida = ["msg"=>$resultado];
+    //
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 
 }
 
 
 
-
-
-mysqli_close($link);
+$conn->close(); //sempre será executado se der um include ao "conecta.php"
 ?>
