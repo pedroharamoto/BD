@@ -139,6 +139,20 @@ function addMembro($conn,$obj){
 
     $resultado = exQuery($conn,$sql);
     //
+    if($resultado){
+        //
+        //add um membro, agora é necessario add a relação MEMBRO ~ IGREJA
+        //
+        $membro_igreja_nome = $obj->membro_igreja_nome;
+        //
+        $txt_dados = "";
+        $txt_dados .= "(" . $membro_cpf . ",'" . $membro_igreja_nome . "')";
+        //
+        $sql = "INSERT INTO membro_igreja (cpf_membro, nome_igreja) VALUES " . $txt_dados;
+        //
+        $resultado = exQuery($conn,$sql);
+    }
+    //
     $saida = ["msg"=>$resultado]; //apenas para mandar sempre um json, aqui ainda não é um json
     //
     //
