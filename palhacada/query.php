@@ -21,6 +21,10 @@ else if($ordem == 3){
     //adc um membro
     addMembro($conn,$obj);
 }
+else if($ordem == 57){
+    //mostra um membro de uma igreja
+    mostraMembro($conn,$obj);
+}
 //**************************************************************//
 //**************************************************************//
 //
@@ -101,7 +105,28 @@ function addIgreja($conn,$obj){
 //
 //**************************************************************//
 //**************************************************************//
+function mostraMembro($conn,$obj){
+    //
+    // o $saida para CONSULTAS são diferentes do $saida das inserções
+    //
+    $membro_nome = $obj->membro_nome;
+    $membro_igreja_nome = $obj->membro_igreja_nome;
 
+    $condicao = "membro_igreja.nome_igreja = '" . $membro_igreja_nome . "'";
+    $condicao .= " AND membro_igreja.cpf_membro = membros.cpf";
+    $condicao .= " AND membros.nome like '%" . $membro_nome . "%'";
+
+    $sql = "SELECT membros.nome nome, membros.cpf cpf FROM membros,membro_igreja WHERE " . $condicao;
+    //
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    //
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
+}
+//
 function addMembro($conn,$obj){
     //
     //insere um membro
@@ -158,16 +183,6 @@ function addMembro($conn,$obj){
     //
     echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
-
-function mostraMembro(){
-
-}
-
-
-
-
-
-
 
 
 

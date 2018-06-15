@@ -19,7 +19,9 @@
         <div class="col-md-4">
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">Igreja:</span>
-                <input value="igreja" id="proc_membro_igreja" type="text" class="form-control" placeholder="Procure os membros de uma igreja" aria-describedby="basic-addon1">
+                <div id="lista_igrejas">
+
+                </div>
             </div>
         </div>
         <div class="col-md-4">
@@ -42,7 +44,7 @@
 
     <div class="row">
         <div class="col-md-12">
-          <div id="mostra_igrejas">
+          <div id="mostra_membros_igrejas">
 
               <p></p>
 
@@ -56,8 +58,12 @@
 
 
 
-<script type="text/javascript">
+<script type='text/javascript'>
 
-  show_membros();
+$(document).ready(function() {
+
+show_lista_igrejas();
+
+});
 
 </script>
