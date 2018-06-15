@@ -7,33 +7,124 @@ function carregar(pagina){
 };
 
 function addIgreja(ordem,igreja_nome,igreja_qte_membros,igreja_rua,igreja_numero,igreja_complemento,igreja_cep,igreja_bairro,igreja_cidade,igreja_uf){
-        var dados = {
-                "ordem" : ordem,
-                "igreja_nome" : igreja_nome,
-                "igreja_qte_membros" : igreja_qte_membros,
-                "igreja_rua" : igreja_rua,
-                "igreja_numero" : igreja_numero,
-                "igreja_complemento" : igreja_complemento,
-                "igreja_cep" : igreja_cep,
-                "igreja_bairro" : igreja_bairro,
-                "igreja_cidade" : igreja_cidade,
-                "igreja_uf" : igreja_uf
-        };
-        $.ajax({
-                data:  dados, //dados que serão enviados via AJAX
-                url:   'query.php', //programa php com a query
-                type:  'post', //método de envio
-                beforeSend: function () {
-                        //...
-                },
-                success:  function (response) {
-                        $("#plot").html(response)
-                }
-        });
+    //
+    $("#plot").empty();
+    //
+    var dados = {
+            "funcao" : ordem,
+            "igreja_nome" : igreja_nome,
+            "igreja_qte_membros" : igreja_qte_membros,
+            "igreja_rua" : igreja_rua,
+            "igreja_numero" : igreja_numero,
+            "igreja_complemento" : igreja_complemento,
+            "igreja_cep" : igreja_cep,
+            "igreja_bairro" : igreja_bairro,
+            "igreja_cidade" : igreja_cidade,
+            "igreja_uf" : igreja_uf
+    };
+    parametros = JSON.stringify(dados);
+
+    var texto_retorno = "";
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            retorno = this.responseText;
+            //
+            retorno = JSON.parse(retorno);
+            //
+            if(retorno.msg === false){
+                texto_retorno = "ERRO!<br>"+igreja_nome+" já existe!";
+            }
+            else{
+                console.log(retorno);
+                texto_retorno = "Igreja " + igreja_nome + " cadastrada!";
+            }
+            //
+            $("#plot").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
 }
+//
+function show_igrejas(){
+    //
+    //função para mostrar as igrejas cadastradas
+    //
+    $("#mostra_igrejas").empty();//limpo a div q irá mostrar
+    var igreja_nome = $("#igreja_nome").val();
+
+    if(!igreja_nome){
+        igreja_nome = "";
+    }
+    //
+    var dados = {
+            "funcao" : 2,
+            "igreja_nome" : igreja_nome
+    };
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var texto_retorno = ""; //corpo da div
+    //
+    //aqui vai começar o codigo para o AJAX-PHP
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //
+            //
+            if(retorno.length == 0){
+                //não encontrou nenhum resultado
+                texto_retorno += "<p>Não há igrejas cadastradas!";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                texto_retorno += '<table class="table table-striped"><thead><tr><th>#</th><th>Nome</th><th>Cidade</th></tr></thead>';
+                texto_retorno += '<tbody>';
+                //
+                for (i in retorno) {
+
+                    texto_retorno += '<td>'+ parseInt(parseInt(i)+1) +'</td>';
+                    texto_retorno +='<td>'+retorno[i].nome+'</td>';
+                    texto_retorno +='<td>'+retorno[i].cidade+'</td>';
+                    texto_retorno += '</tr>';
+
+                }
+                texto_retorno += '</tbody></table>';
+            }
+            $("#mostra_igrejas").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+}
+//
 function envia(ordem){
 
-    if(ordem == 1){ //busca dicotomica
+    if(ordem == 1){ //adc igreja
 
         var igreja_nome = $("#igreja_nome").val();
         var igreja_qte_membros = $("#igreja_qte_membros").val();
@@ -45,663 +136,6 @@ function envia(ordem){
         var igreja_cidade = $("#igreja_cidade").val();
         var igreja_uf = $("#igreja_uf").val();
 
-
         addIgreja(ordem,igreja_nome,igreja_qte_membros,igreja_rua,igreja_numero,igreja_complemento,igreja_cep,igreja_bairro,igreja_cidade,igreja_uf);
-
     }
-
-    else if(ordem == 2){//busca uniforme
-
-        var fx = $("#fx").val();
-        var a = $("#a").val();
-        var b = $("#b").val();
-        var delta = $("#delta").val();
-        var retorno = $("#retorno");
-        var passos = $("#plot");
-
-        retorno.empty();
-        passos.empty();
-
-        BuscaUniforme(fx,a,b,delta,retorno);
-    }
-
-    else if(ordem == 3){ //busca seção aurea
-
-        var fx = $("#fx").val();
-        var a = $("#a").val();
-        var b = $("#b").val();
-        var epsilon = $("#epsilon").val();
-        var retorno = $("#retorno");
-
-        retorno.empty();
-
-        buscaAurea(fx,a,b,epsilon,retorno);
-    }
-
-    else if(ordem == 4){ //busca fibonacci
-
-        var fx = $("#fx").val();
-        var a = $("#a").val();
-        var b = $("#b").val();
-        var epsilon = $("#epsilon").val();
-        var retorno = $("#retorno");
-
-        retorno.empty();
-
-        buscaFibonacci(fx,a,b,epsilon,retorno);
-    }
-
-    else if(ordem == 5){ //metodo da biseccao
-
-        var fx = $("#fx").val();
-        var a = $("#a").val();
-        var b = $("#b").val();
-        var epsilon = $("#epsilon").val();
-        var retorno = $("#retorno");
-
-        retorno.empty();
-
-        biseccao(fx,a,b,epsilon,retorno);
-    }
-
-    else if(ordem == 6){ //metodo de newton
-
-        var fx = $("#fx").val();
-        var a = $("#a").val();
-        var b = $("#b").val();
-        var epsilon = $("#epsilon").val();
-        var xinicial = $("#xinicial").val()
-        var retorno = $("#retorno");
-
-        retorno.empty();
-
-        newton(fx,a,b,epsilon,xinicial,retorno);
-    }
-
-}
-
-function newton(fx,a,b,epsilon,xinicial,retorno){
-    //
-    a = parseFloat(a);
-    b = parseFloat(b);
-    epsilon = parseFloat(epsilon);
-    var resposta = "";
-    var k = 0;
-    var f = math.compile(fx);
-    var pri_fx = math.derivative(fx,'x',{simplify: false}); //é preciso setar simplify:false para poder fazer a proxima derivada
-    var seg_fx = math.derivative(pri_fx,'x');
-    //
-    //calcula o valor da primeira e segunda derivada, no ponto xinicial
-    //
-    var p = pri_fx.eval({x:xinicial});
-    var s = seg_fx.eval({x:xinicial});
-    //
-    //se p ou s forem muito proximas de zero, retorno xinicial
-    //
-    if( (math.abs(p) <= epsilon) || (math.abs(s) <= epsilon) ){
-        resposta += "<b>x = "+xinicial;
-        resposta += "<br>f(x) = " + f.eval({x:xinicial});
-    }
-    //
-    //determinando o novo ponto xp
-    //
-    var xp = (xinicial - (p/s));
-    //
-    //codição de parada do método:
-	//enquanto |b-a|/max{1,|xinicial| for maior que epsilon
-	//ou numéro de iterações for menor que 100 => continua
-    //
-    var erro = (math.abs(xp - xinicial))/(math.max(1,math.abs(xp)));
-    //
-    //
-    var texto_retorno = "<table class='table'><thead><tr><th>#</th><th>x</th><th>f'(x)</th><th>f''(x)</th></tr></thead>";
-    texto_retorno += '<tbody>';
-    //
-    //
-    while(erro > epsilon && k < 100 && resposta == ""){
-        //
-        xinicial = xp;
-        //
-        //calcula a derivida primeira e segunda do novo xinicial
-        //
-        p = pri_fx.eval({x:xinicial});
-        s = seg_fx.eval({x:xinicial});
-        //
-        if(k%2 === 0)
-            texto_retorno += '<tr bgcolor="#DCDCDC">';
-        else
-            texto_retorno += '<tr>';
-
-        texto_retorno += '<td>'+(k+1)+'</td>';
-        texto_retorno +='<td>'+xinicial.toFixed(4)+'</td>';
-        texto_retorno +='<td>'+p.toFixed(4)+'</td>';
-        texto_retorno +='<td>'+s.toFixed(4)+'</td>';
-        texto_retorno += '</tr>';
-        //
-        if( (math.abs(p) <= epsilon) || (math.abs(s) <= epsilon) ){
-            resposta += "<b>x = "+xinicial;
-            resposta += "<br>f(x) = " + f.eval({x:xinicial});
-            break;
-        }
-        //
-        xp = (xinicial - (p/s));
-        k = k + 1;
-        erro = (math.abs(xp - xinicial))/(math.max(1,math.abs(xp)));
-    }
-    //
-    if(resposta == ""){
-        resposta += "<b>x = " + p;
-        resposta += "<br><b>f(x) = "+f.eval({x:p});
-    }
-    //
-    texto_retorno += ('<tr bgcolor="#3CB371"><td align="center" colspan="8"><b>Resposta<b></td></tr>');
-
-    if(k%2 === 0)
-        texto_retorno += '<tr bgcolor="#DCDCDC">';
-    else
-        texto_retorno += '<tr>';
-
-    texto_retorno += '<td colspan="8" align="center">'+resposta+'</td>';
-    texto_retorno += '</tr>';
-    //
-    texto_retorno += '</tbody></table>';
-    //
-    retorno.append(texto_retorno);
-}
-
-function biseccao(fx,a,b,epsilon,retorno){
-    //
-    var f = math.compile(fx);
-    a = parseFloat(a);
-    b = parseFloat(b);
-    epsilon = parseFloat(epsilon);
-    //
-    var p;
-    var z = (math.log10((b-a)/epsilon));
-    var y = (math.log10(2));
-    var k = parseInt(z/y)+1;
-    //
-    var fd = math.derivative(fx,'x');
-    var fp;
-    //
-    //
-    var resposta = "";
-    //
-    var texto_retorno = '<table class="table"><thead><tr><th>#</th><th>p</th><th>F(p)</th></tr></thead>';
-    texto_retorno += '<tbody>';
-    //
-    for(var i = 0;i<k;i++){
-        p = (a+b)/2;
-        //
-        fp = fd.eval({x:p}); //derivada aplica ao ponto p
-        //
-        if(i%2 === 0)
-            texto_retorno += '<tr bgcolor="#DCDCDC">';
-        else
-            texto_retorno += '<tr>';
-
-        texto_retorno += '<td>'+(i+1)+'</td>';
-        texto_retorno +='<td>'+p.toFixed(4)+'</td>';
-        texto_retorno +='<td>'+fp.toFixed(4)+'</td>';
-        texto_retorno += '</tr>';
-        //
-        if ( ((b-a) < epsilon) && (abs(p) < epsilon)){
-            break;
-        }
-        if(fp > epsilon){
-            b = p;
-        }
-        else{
-            a = p;
-        }
-    }
-    //
-    resposta += "<b>x = " + p;
-    resposta += "<br><b>f(x) = "+f.eval({x:p});
-    //
-    texto_retorno += ('<tr bgcolor="#3CB371"><td align="center" colspan="8"><b>Resposta<b></td></tr>');
-
-    if(i%2 === 0)
-        texto_retorno += '<tr bgcolor="#DCDCDC">';
-    else
-        texto_retorno += '<tr>';
-
-    texto_retorno += '<td colspan="8" align="center">'+resposta+'</td>';
-    texto_retorno += '</tr>';
-    //
-    texto_retorno += '</tbody></table>';
-    //
-    //
-    retorno.append(texto_retorno);
-}
-
-function buscaDicotomica(fx,a,b,delta,epsilon,retorno,passos){
-
-    var f = math.compile(fx);
-    var m; //media
-    var p; //ponto p
-    var fp; //função aplicada ao ponto p
-    var q; // ponto q
-    var fq; //fução aplicada ao ponto q
-    var i = 1;
-    var xOtimo;
-    var fxOtimo;
-
-    var texto_retorno = '<table class="table"><thead><tr><th>#</th><th>p</th><th>F(p)</th><th>q</th><th>F(q)</th></tr></thead>';
-    texto_retorno += '<tbody>';
-
-    while( math.abs(b-a) > epsilon ){
-
-        m = (parseFloat(a) + parseFloat(b))/2;
-        p = parseFloat(m) - parseFloat(delta);
-        q = parseFloat(m) + parseFloat(delta);
-
-        fp = f.eval({x:p});
-        fq = f.eval({x:q});
-
-        if(fp > fq){
-            a = p;
-        }
-        else{
-            b = q;
-        }
-
-        if(i%2 === 0)
-            texto_retorno += '<tr bgcolor="#DCDCDC">';
-        else
-            texto_retorno += '<tr>';
-
-        texto_retorno += '<td>'+i+'</td>';
-        texto_retorno +='<td>'+p.toFixed(4)+'</td>';
-        texto_retorno +='<td>'+fp.toFixed(4)+'</td>';
-        texto_retorno += '<td>'+q.toFixed(4)+'</td>';
-        texto_retorno += '<td>'+fq.toFixed(4)+'</td>';
-        texto_retorno += '</tr>';
-        i++;
-    }
-
-    m = (parseFloat(a)+ parseFloat(b))/2;
-    p = parseFloat(m) - parseFloat(delta);
-    q = parseFloat(m) + parseFloat(delta);
-
-    fp = f.eval({x:p});
-    fq = f.eval({x:q});
-
-    if(i%2 === 0)
-        texto_retorno += '<tr bgcolor="#DCDCDC">';
-    else
-        texto_retorno += '<tr>';
-    texto_retorno +='<td>'+i+'</td>';
-    texto_retorno +='<td>'+p.toFixed(4)+'</td>';
-    texto_retorno +='<td>'+fp.toFixed(4)+'</td>';
-    texto_retorno +='<td>'+q.toFixed(4)+'</td>';
-    texto_retorno += '<td>'+fq.toFixed(4)+'</td>';
-    texto_retorno += '</tr>';
-    //texto_retorno += '</tbody></table>';
-
-    xOtimo = (a+b)/2;
-    fxOtimo = f.eval({x:xOtimo});
-
-    texto_retorno += ('<tr bgcolor="#3CB371"><td align="center" colspan="8"><b>Resposta<b></td></tr>');
-
-    if(i%2 === 0)
-        texto_retorno += '<tr bgcolor="#DCDCDC">';
-    else
-        texto_retorno += '<tr>';
-
-    texto_retorno += '<td colspan="8" align="center"><p><b>xOtimo = </b>'+xOtimo.toFixed(4)+'</p><p><b>f(xOtimo) = </b>'+ (parseFloat(f.eval({x:xOtimo}))).toFixed(4) +'</p></td>';
-    texto_retorno += '</tr>';
-    texto_retorno += '</tbody></table>';
-
-    retorno.append(texto_retorno);
-
-}
-
-function BuscaUniforme(fx,a,b,delta,retorno){
-
-    var f = math.compile(fx);
-    var m; //media
-    var p = parseFloat(a); //ponto p
-    var fp = f.eval({x:p}); //função aplicada ao ponto p
-    var q = parseFloat(p) + parseFloat(delta); // ponto q
-    var fq = f.eval({x:q}); //fução aplicada ao ponto q
-    var i = 1;
-    var xOtimo;
-    var fxOtimo;
-
-    var resposta = "";
-
-    var passo = '<table class="table"><thead><tr><th>#</th><th>p</th><th>F(p)</th><th>q</th><th>F(q)</th></tr></thead>';
-    passo += '<tbody>';
-
-    if(i%2 === 0)
-        passo += '<tr bgcolor="#DCDCDC">';
-    else
-        passo += '<tr>';
-
-    passo += '<td>'+i+'</td>';
-    passo +='<td>'+ p.toFixed(4) +'</td>';
-    passo +='<td>'+fp.toFixed(4)+'</td>';
-    passo += '<td>'+q.toFixed(4)+'</td>';
-    passo += '<td>'+fq.toFixed(4)+'</td>';
-    passo += '</tr>';
-    i++;
-
-    while( fp>fq && q<b){
-        p = q;
-        fp = fq;
-        q = parseFloat(p) + parseFloat(delta);
-        fq = f.eval({x:q});
-
-        if(i%2 === 0)
-            passo += '<tr bgcolor="#DCDCDC">';
-        else
-            passo += '<tr>';
-
-        passo += '<td>'+i+'</td>';
-        passo +='<td>'+p.toFixed(4)+'</td>';
-        passo +='<td>'+fp.toFixed(4)+'</td>';
-        passo += '<td>'+q.toFixed(4)+'</td>';
-        passo += '<td>'+fq.toFixed(4)+'</td>';
-        passo += '</tr>';
-        i++;
-    }
-
-    passo += ('<tr bgcolor="#3CB371"><td align="center" colspan="5"><b>Refinamento</b></td></tr>');
-
-    p = parseFloat(p) - parseFloat(delta);
-    fp = f.eval({x:p});
-
-    if(i%2 === 0)
-        passo += '<tr bgcolor="#DCDCDC">';
-    else
-        passo += '<tr>';
-
-    passo += '<td>'+i+'</td>';
-    passo +='<td>'+p.toFixed(4)+'</td>';
-    passo +='<td>'+fp.toFixed(4)+'</td>';
-    passo += '<td>'+q.toFixed(4)+'</td>';
-    passo += '<td>'+fq.toFixed(4)+'</td>';
-    passo += '</tr>';
-    i++;
-
-    delta = parseFloat(delta)/10;
-	q = parseFloat(p) + parseFloat(delta);
-	fq = f.eval({x:q});
-
-    if(i%2 === 0)
-        passo += '<tr bgcolor="#DCDCDC">';
-    else
-        passo += '<tr>';
-
-    passo += '<td>'+i+'</td>';
-    passo +='<td>'+p.toFixed(4)+'</td>';
-    passo +='<td>'+fp.toFixed(4)+'</td>';
-    passo += '<td>'+q.toFixed(4)+'</td>';
-    passo += '<td>'+fq.toFixed(4)+'</td>';
-    passo += '</tr>';
-    i++;
-
-    while (fp>fq && q<b){
-		p = q;
-		fp = fq;
-		q = parseFloat(p) + parseFloat(delta);
-		fq = f.eval({x:q});
-
-        if(i%2 === 0)
-            passo += '<tr bgcolor="#DCDCDC">';
-        else
-            passo += '<tr>';
-
-        passo += '<td>'+i+'</td>';
-        passo +='<td>'+p.toFixed(4)+'</td>';
-        passo +='<td>'+fp.toFixed(4)+'</td>';
-        passo += '<td>'+q.toFixed(4)+'</td>';
-        passo += '<td>'+fq.toFixed(4)+'</td>';
-        passo += '</tr>';
-        i++;
-    }
-
-
-    passo += ('<tr bgcolor="#3CB371"><td align="center" colspan="5"><b>Resposta<b></td></tr>');
-    if (q > b){
-        resposta += ("<b>xOtimo =</b> "+b.toFixed(4) + "<br> <b>F(xOtimo) = </b>"+ (f.eval({x:b})).toFixed(4));
-    }
-    else{
-        resposta += ("<b>xOtimo =</b> "+p.toFixed(4) + "<br> <b>F(xOtimo) = </b>    " + fp.toFixed(4));
-    }
-
-    if(i%2 === 0)
-        passo += '<tr bgcolor="#DCDCDC">';
-    else
-        passo += '<tr>';
-
-    passo += ('<td colspan="5"><p align="center">'+ resposta + '</p></td></tr>');
-
-    passo += '</tbody></table>';
-    retorno.append(passo);
-}
-function buscaAurea(fx,a,b,epsilon,retorno){
-
-    var alfa = (Math.pow(5,(1/2)) - 1)/2;
-    alfa = (parseFloat(alfa)).toFixed(5);
-
-    var beta = 1 - alfa;
-    beta = (parseFloat(beta)).toFixed(5);
-
-    var aPrint;
-    var bPrint;
-
-    var flagP = 0;
-    var flagQ = 0;
-
-    var p; //ponto p
-    var fp; //função aplicada ao ponto p
-    var q; // ponto q
-    var fq; //fução aplicada ao ponto q
-    var f = math.compile(fx);
-    var i = 1;
-    var xOtimo;
-    var fxOtimo;
-
-    var resposta = "";
-
-    var passo = '<table class="table"><thead><tr><th>#</th><th>a</th><th>b</th><th>(b-a)</th><th>p</th><th>F(p)</th><th>q</th><th>F(q)</th></tr></thead>';
-    passo += '<tbody>';
-
-    while((b-a) > epsilon){
-        aPrint = a
-        bPrint = b;
-
-        p = (parseFloat(a) + (parseFloat(beta) * (b-a))); //ponto p
-        fp = f.eval({x:p}); //função aplicada ao ponto p
-
-        q = parseFloat(a) + (parseFloat(alfa) * (b-a)); // ponto q
-        fq = f.eval({x:q}); //fução aplicada ao ponto q
-
-        if(fp > fq){
-            a = p;
-            flagQ = 0;
-            flagP = 1;
-        }
-        else{
-            b = q;
-            flagP = 0;
-            flagQ = 1;
-        }
-
-        if(i%2 === 0)
-            passo += '<tr bgcolor="#DCDCDC">';
-        else
-            passo += '<tr>';
-
-        passo += '<td>'+i+'</td>';
-        passo += '<td>'+(parseFloat(aPrint)).toFixed(4)+'</td>';
-        passo += '<td>'+(parseFloat(bPrint)).toFixed(4)+'</td>';
-        passo += '<td>'+(parseFloat(bPrint-aPrint)).toFixed(4)+'</td>';
-        passo +='<td>'+p.toFixed(4)+'</td>';
-
-        if(flagP){
-            passo +='<td bgcolor="#8FBC8F">'+fp.toFixed(4)+'</td>';
-        }
-        else{
-            passo +='<td>'+fp.toFixed(4)+'</td>';
-        }
-
-        passo += '<td>'+q.toFixed(4)+'</td>';
-
-
-        if(flagQ){
-            passo +='<td bgcolor="#8FBC8F">'+fq.toFixed(4)+'</td>';
-        }
-        else{
-            passo +='<td>'+fq.toFixed(4)+'</td>';
-        }
-
-        passo += '</tr>';
-        i++;
-    }
-
-    if(i%2 === 0)
-        passo += '<tr bgcolor="#DCDCDC">';
-    else
-        passo += '<tr>';
-
-    passo += '<td>'+i+'</td>';
-    passo += '<td>'+(parseFloat(aPrint)).toFixed(4)+'</td>';
-    passo += '<td>'+(parseFloat(bPrint)).toFixed(4)+'</td>';
-    passo += '<td>'+(parseFloat(bPrint-aPrint)).toFixed(4)+'</td>';
-    passo +='<td>'+p.toFixed(4)+'</td>';
-    passo +='<td>'+fp.toFixed(4)+'</td>';
-    passo += '<td>'+q.toFixed(4)+'</td>';
-    passo += '<td>'+fq.toFixed(4)+'</td>';
-    passo += '</tr>';
-    i++;
-
-    xOtimo = (a+b)/2;
-
-    passo += ('<tr bgcolor="#3CB371"><td align="center" colspan="8"><b>Resposta<b></td></tr>');
-
-    if(i%2 === 0)
-        passo += '<tr bgcolor="#DCDCDC">';
-    else
-        passo += '<tr>';
-
-    passo += '<td colspan="8" align="center"><p><b>xOtimo = </b>'+xOtimo.toFixed(4)+'</p><p><b>f(xOtimo) = </b>'+ (parseFloat(f.eval({x:xOtimo}))).toFixed(4) +'</p></td>';
-    passo += '</tr>';
-    passo += '</tbody></table>';
-
-    retorno.append(passo);
-
-}
-
-function fibonacci(n_fib){
-    //n_fib é o valor do maior elemento da sequencia
-    //essa função irá retornar um vetor com a sequencia de fibonacci
-    var seq_fib = []; //vetor com a sequencia
-
-    seq_fib.push(1);
-    seq_fib.push(1);
-
-    // os 2 primeiros elementos são 1,1
-    var i = 1; //i = 1, pois ja temos 2 elementos no vetor
-    //
-    while(seq_fib[i] < n_fib){
-        i++;
-        seq_fib.push(seq_fib[i-2]+seq_fib[i-1]);
-    }
-
-    return seq_fib;
-}
-
-function buscaFibonacci(fx,a,b,epsilon,retorno){
-
-    var fib = parseInt((b-a)/epsilon);
-    var seq_fib = fibonacci(fib);
-    var tam_fib = seq_fib.length-1;
-
-    var f = math.compile(fx);
-    var p;
-    var fp;
-    var q;
-    var fq;
-    var sub;
-    var xOtimo;
-    var fOtimo;
-    var aPrint;
-    var bPrint;
-    var flagP = 0;
-    var flagQ = 0;
-
-    var passo = '<table class="table"><thead><tr><th>#</th><th>a</th><th>b</th><th>p</th><th>F(p)</th><th>q</th><th>F(q)</th></tr></thead>';
-    passo += '<tbody>';
-
-    for(i = 0; i<(tam_fib-1); i++){
-        aPrint = parseFloat(a);
-        bPrint = parseFloat(b);
-        //retorno.append("<br><br>i: "+i);
-        sub = (b - a);
-
-        p = parseFloat(parseFloat(a) + parseFloat(((seq_fib[tam_fib-i-2])/seq_fib[tam_fib-i]) * sub));
-        //retorno.append("<br>P: "+p.toFixed(4));
-        fp = parseFloat(f.eval({x:p}));
-        //retorno.append("<br>fp: "+fp.toFixed(4));
-
-        q = parseFloat(parseFloat(a) + parseFloat(((seq_fib[tam_fib-i-1])/seq_fib[tam_fib-i]) * sub));
-        //retorno.append("<br>q: "+q.toFixed(4));
-        fq = parseFloat(f.eval({x:q}));
-        //retorno.append("<br>fq: "+fq.toFixed(4));
-
-        if(fq < fp){
-            a = p;
-            flagP = 1;
-            flagQ = 0;
-        }
-        else{
-            b = q;
-            flagP = 0;
-            flagQ = 1;
-        }
-
-
-        if(i%2 === 0)
-            passo += '<tr bgcolor="#DCDCDC">';
-        else
-            passo += '<tr>';
-
-        passo += '<td>'+i+'</td>';
-        passo += '<td>'+aPrint.toFixed(4)+'</td>';
-        passo += '<td>'+bPrint.toFixed(4)+'</td>';
-        passo += '<td>'+p.toFixed(4)+'</td>';
-        if(flagP){
-            passo +='<td bgcolor="#8FBC8F">'+fp.toFixed(4)+'</td>';
-        }
-        else{
-            passo +='<td>'+fp.toFixed(4)+'</td>';
-        }
-        passo += '<td>'+q.toFixed(4)+'</td>';
-        if(flagQ){
-            passo +='<td bgcolor="#8FBC8F">'+fq.toFixed(4)+'</td>';
-        }
-        else{
-            passo +='<td>'+fq.toFixed(4)+'</td>';
-        }
-        passo += '</tr>';
-    }
-
-    xOtimo = (a+b)/2;
-
-    passo += ('<tr bgcolor="#3CB371"><td align="center" colspan="8"><b>Resposta<b></td></tr>');
-
-    if(i%2 === 0)
-        passo += '<tr bgcolor="#DCDCDC">';
-    else
-        passo += '<tr>';
-
-    passo += '<td colspan="8" align="center"><p><b>xOtimo = </b>'+xOtimo.toFixed(4)+'</p><p><b>f(xOtimo) = </b>'+ (parseFloat(f.eval({x:xOtimo}))).toFixed(4) +'</p></td>';
-    passo += '</tr>';
-    passo += '</tbody></table>';
-
-    retorno.append(passo);
-
 }
