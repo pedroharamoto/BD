@@ -32,6 +32,10 @@ else if($ordem == 58){
     //mostra um membro de uma igreja
     mostraPastores($conn,$obj);
 }
+else if($ordem == 59){
+    //mostra um membro de uma igreja
+    mostraPastoresMesmo($conn,$obj);
+}
 //**************************************************************//
 //**************************************************************//
 //
@@ -204,6 +208,36 @@ function addMembro($conn,$obj){
 //
 //**************************************************************//
 //**************************************************************//
+function mostraPastoresMesmo($conn,$obj){
+    //
+    // o $saida para CONSULTAS são diferentes do $saida das inserções
+    //
+    $membro_igreja_nome = $obj->membro_igreja_nome;
+    $proc_pastor_nome   = $obj->proc_pastor_nome;
+    //
+    $condicao = "";
+
+    if(!$membro_igreja_nome){
+        $cond_igreja = "";
+    }
+    else{
+        $cond_igreja = " AND igreja_pastor.nome_igreja = '" . $membro_igreja_nome . "'";
+    }
+    $condicao .= $cond_igreja;
+    $condicao .= " AND membros.nome like '%" . $proc_pastor_nome . "%'";
+
+    $sql = "SELECT membros.cpf cpf, membros.nome nome, membros.email email, membros.telefone telefone, membros.sexo sexo, membros.cidade cidade, membros.uf uf, membros.cep cep, membros.data_nasc data_nasc, membros.rua rua, membros.numero numero, membros.bairro bairro, membros.complemento complemento";
+    $sql .= " FROM membros,igreja_pastor";
+    $sql .= " WHERE membros.cpf = igreja_pastor.cpf_pastor" . $condicao;
+    //
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
+
+}
 function mostraPastores($conn,$obj){
     //
     //mostra as igrejas
