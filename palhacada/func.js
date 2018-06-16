@@ -8,15 +8,14 @@ function carregar(pagina){
 //
 //
 //
-function addPastor(ordem,pastores_cpf,pastores_data_posse,pastores_empossador){
+function addPastor(ordem,pastores_cpf,pastor_membro_igreja){
     //função para add um pastor a uma igreja
     $("#plot").empty();
     //
     var dados = {
         "funcao" : ordem,
-        "pastores_data_posse" : pastores_data_posse,
-        "pastores_empossador" : pastores_empossador,
-        "pastores_cpf" : pastores_cpf
+        "pastores_cpf" : pastores_cpf,
+        "pastor_igreja" : pastor_membro_igreja
     }
     //
     parametros = JSON.stringify(dados);
@@ -32,17 +31,12 @@ function addPastor(ordem,pastores_cpf,pastores_data_posse,pastores_empossador){
             retorno = this.responseText;
             //
             //
+            console.log(retorno);
             retorno = JSON.parse(retorno);
             //
             //
-            if(retorno.msg === false){
-                texto_retorno = "ERRO!<br>"+pastores_cpf+" já existe!";
-            }
-            else{
-                texto_retorno = "Pastor " + pastores_cpf + " cadastrado!";
-            }
             //
-            $("#plot").append(texto_retorno);
+            $("#msg_pastor").append(retorno.msg);
         }
     };
     //
@@ -95,7 +89,6 @@ function addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,m
                 texto_retorno = "ERRO!<br>"+membro_cpf+" já existe!";
             }
             else{
-                console.log(retorno);
                 texto_retorno = "Membro " + membro_cpf + " cadastrado!";
             }
             //
@@ -147,7 +140,6 @@ function addIgreja(ordem,igreja_nome,igreja_qte_membros,igreja_rua,igreja_numero
                 texto_retorno = "ERRO!<br>"+igreja_nome+" já existe!";
             }
             else{
-                console.log(retorno);
                 texto_retorno = "Igreja " + igreja_nome + " cadastrada!";
             }
             //
@@ -218,6 +210,112 @@ function show_lista_igrejas(){
 
 }
 //
+function show_pastores(ordem,membro_igreja_nome,membro_nome){
+    //
+    //função para mostrar os pastores
+    //
+    $("#mostra_membros_igrejas").empty();
+    //
+    var dados = {
+        "funcao" : ordem,
+        "membro_igreja_nome" : membro_igreja_nome,
+        "membro_nome" : membro_nome
+    };
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var n = 0;
+    //
+    var texto_retorno = ""; //corpo da div
+    //
+    //aqui vai começar o codigo para o AJAX-PHP
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //
+            //
+            if(retorno.length == 0 || retorno == ""){
+                //não encontrou nenhum resultado
+                texto_retorno += "<p>Não há PASTORES nesta igreja!";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                texto_retorno += '<table class="table table-striped" style="width:75%;"><thead><tr><th style="width:5%;">#</th><th style="width:95%;">Nome</th><th>&nbsp;</th></tr></thead>';
+                texto_retorno += '<tbody>';
+                //
+                for (i in retorno) {
+
+                    n = parseInt(parseInt(i)+1);
+
+                    texto_retorno += '<tr>';
+                    texto_retorno += '<td>'+ n +'</td>';
+                    texto_retorno +='<td>';
+
+                    texto_retorno += '<a role="button" data-toggle="collapse" href="#collapse'+n+'" aria-expanded="false" aria-controls="collapse'+n+'">';
+                    texto_retorno += '' + retorno[i].nome + '';
+                    texto_retorno += '</a>';
+
+                    texto_retorno += '<div class="collapse" id="collapse'+n+'">';
+                    texto_retorno +=    '<div class="well">';
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            'CPF: '+ retorno[i].cpf + '<br>';
+                    texto_retorno +=        '</p>';
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            'Igreja: '+ retorno[i].nome_igreja + '<br>';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            'Endereço: ' + retorno[i].rua + ', ' + retorno[i].numero;
+                    texto_retorno +=            ', ' + retorno[i].bairro + ', ' + retorno[i].cep;
+                    texto_retorno +=        '</p>';
+                    texto_retorno +=    '</div>';
+
+                    texto_retorno +=    '<div class="row">';
+
+                    texto_retorno +=     '<input type="hidden" id="membro_ig'+retorno[i].cpf+'" value="'+retorno[i].nome_igreja+'" type="text">';
+
+                    texto_retorno +=        '<div class="col-md-10">';
+                    texto_retorno +=            '<div id="msg_pastor"></div>';
+                    texto_retorno +=        '</div>';
+
+                    texto_retorno +=        '<div class="col-md-10">';
+                    texto_retorno +=            '<div class="alinhamento">';
+                    texto_retorno +=                '<input class="btn btn-success" id="btn_promover" onclick="envia2(88,'+retorno[i].cpf+')" type="button" value="Promover"></input>';
+                    texto_retorno +=            '</div>';
+                    texto_retorno +=        '</div>';
+
+                    texto_retorno +=    '</div>';
+
+                    texto_retorno += '</div>';
+                    texto_retorno += '</td>';
+
+                    texto_retorno += '</tr>';
+
+                }
+                texto_retorno += '</tbody></table>';
+            }
+            $("#mostra_membros_igrejas").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+}
+//
 function show_membros(ordem,membro_igreja_nome,membro_nome){
     //
     //função para mostrar os membros de uma igreja
@@ -245,7 +343,6 @@ function show_membros(ordem,membro_igreja_nome,membro_nome){
             //
             //recebo todos o resultado da query realizada, em formato JSON
             //
-            console.log(this.responseText);
             retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
             //
             //
@@ -263,6 +360,8 @@ function show_membros(ordem,membro_igreja_nome,membro_nome){
                 //
                 for (i in retorno) {
 
+                    texto_retorno += '<tr>';
+                    texto_retorno += '<td>';
                     texto_retorno += '<td>'+ parseInt(parseInt(i)+1) +'</td>';
                     texto_retorno +='<td>'+retorno[i].nome+'</td>';
                     texto_retorno +='<td>'+retorno[i].cpf+'</td>';
@@ -330,6 +429,8 @@ function show_igrejas(){
                 //
                 for (i in retorno) {
 
+                    texto_retorno += '<tr>';
+                    texto_retorno += '<td>';
                     texto_retorno += '<td>'+ parseInt(parseInt(i)+1) +'</td>';
                     texto_retorno +='<td>'+retorno[i].nome+'</td>';
                     texto_retorno +='<td>'+retorno[i].cidade+'</td>';
@@ -347,6 +448,19 @@ function show_igrejas(){
     xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+}
+//
+function envia2(ordem,cpf){
+
+    if(ordem == 88){ //add um pastor a igreja
+        //
+        var pastores_cpf = cpf;
+        var pastor_membro_igreja = $("#membro_ig"+cpf).val();
+        //
+        //alert(pastores_cpf + " " + pastores_data_posse + " " + pastores_empossador + " " + pastor_igreja);
+        //
+        addPastor(ordem,pastores_cpf,pastor_membro_igreja);
+    }
 }
 //
 function envia(ordem){
@@ -367,34 +481,37 @@ function envia(ordem){
     }
     else if(ordem == 3){ //adc membro
 
-        var membro_igreja_nome = $("#membro_igreja_nome").val();
+        var membro_igreja_nome  = $("#membro_igreja_nome").val();
+        var membro_nome         = $("#membro_nome").val();
+        var membro_cpf          = $("#membro_cpf").val();
+        var membro_nasc         = $("#membro_nasc").val();
+        var membro_sexo         = $("#membro_sexo").val();
+        var membro_email        = $("#membro_email").val();
+        var membro_telefone     = $("#membro_telefone").val();
+        var membro_rua          = $("#membro_rua").val();
+        var membro_numero       = $("#membro_numero").val();
+        var membro_complemento  = $("#membro_complemento").val();
+        var membro_cep          = $("#membro_cep").val();
+        var membro_bairro       = $("#membro_bairro").val();
+        var membro_cidade       = $("#membro_cidade").val();
+        var membro_uf           = $("#membro_uf").val();
+
         //
         if(membro_igreja_nome == 0){
             alert('É necessário escolher uma igreja');
+            $("#membro_igreja_nome").focus();
+            return;
         }
-        else{
-            var membro_nome = $("#membro_nome").val();
-            var membro_cpf = $("#membro_cpf").val();
-            var membro_nasc = $("#membro_nasc").val();
-            var membro_sexo = $("#membro_sexo").val();
-            var membro_email = $("#membro_email").val();
-            var membro_telefone = $("#membro_telefone").val();
-            var membro_rua = $("#membro_rua").val();
-            var membro_numero = $("#membro_numero").val();
-            var membro_complemento = $("#membro_complemento").val();
-            var membro_cep = $("#membro_cep").val();
-            var membro_bairro = $("#membro_bairro").val();
-            var membro_cidade = $("#membro_cidade").val();
-            var membro_uf = $("#membro_uf").val();
-
-            addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,membro_sexo,membro_email,membro_telefone,membro_rua,membro_numero,membro_complemento,membro_cep,membro_bairro,membro_cidade,membro_uf);
-
+        if(membro_sexo == 0){
+            alert('É necessário informar o sexo');
+            $("#membro_sexo").focus();
+            return;
         }
+        addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,membro_sexo,membro_email,membro_telefone,membro_rua,membro_numero,membro_complemento,membro_cep,membro_bairro,membro_cidade,membro_uf);
+
 
     }
     else if(ordem == 57){ //procura um membro de uma igreja dada
-        //
-        //
         //
         var membro_igreja_nome = $("#membro_igreja_nome").val();
         var membro_nome = $("#proc_membro_nome").val();
@@ -403,31 +520,18 @@ function envia(ordem){
             membro_nome = "";
         }
         //
-        if(igreja_nome == 0){
-            alert('É necessário informar a igreja');
-            $("#membro_igreja_nome").focus();
-        }
-        else{
-            show_membros(ordem,membro_igreja_nome,membro_nome);
-        }
+        //
+        show_membros(ordem,membro_igreja_nome,membro_nome);
     }
-    else if(ordem == 4){ //add um pastor a igreja
+    else if(ordem == 58){ //procura pastores
         //
+        var membro_igreja_nome = $("#membro_igreja_nome").val();
+        var membro_nome = $("#proc_membro_nome").val();
         //
-        //
-        var pastores_cpf = $("#pastores_cpf").val();
-        var pastores_data_posse = $("#pastores_data_posse").val();
-        var pastores_empossador = $("#pastores_empossador").val();
-        //
-        if(!pastores_cpf){
-            alert('É necessário informar um CPF');
-            $("#membro_cpf").focus();
-            //
-            return;
+        if (!membro_nome){
+            membro_nome = "";
         }
-        else{
-            addPastor(ordem,pastores_cpf,pastores_data_posse,pastores_empossador);
-        }
-
+        //
+        show_pastores(ordem,membro_igreja_nome,membro_nome);
     }
 }

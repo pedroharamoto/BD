@@ -24,9 +24,13 @@ else if($ordem == 57){
     //mostra um membro de uma igreja
     mostraMembro($conn,$obj);
 }
-else if($ordem == 4){
+else if($ordem == 88){
     //add um pastor
     addPastor($conn,$obj);
+}
+else if($ordem == 58){
+    //mostra um membro de uma igreja
+    mostraPastores($conn,$obj);
 }
 //**************************************************************//
 //**************************************************************//
@@ -114,9 +118,16 @@ function mostraMembro($conn,$obj){
     //
     $membro_nome = $obj->membro_nome;
     $membro_igreja_nome = $obj->membro_igreja_nome;
+    $condicao = "";
 
-    $condicao = "membro_igreja.nome_igreja = '" . $membro_igreja_nome . "'";
-    $condicao .= " AND membro_igreja.cpf_membro = membros.cpf";
+    if(!$membro_igreja_nome){
+        $cond_igreja = "";
+    }
+    else{
+        $cond_igreja = "membro_igreja.nome_igreja = '" . $membro_igreja_nome . "' AND";
+    }
+    $condicao .= $cond_igreja;
+    $condicao .= " membro_igreja.cpf_membro = membros.cpf";
     $condicao .= " AND membros.nome like '%" . $membro_nome . "%'";
 
     $sql = "SELECT membros.nome nome, membros.cpf cpf FROM membros,membro_igreja WHERE " . $condicao;
@@ -124,7 +135,6 @@ function mostraMembro($conn,$obj){
     $resultado = exQuery($conn,$sql);
     $saida = array();
     $saida = $resultado->fetch_all(MYSQLI_ASSOC);
-    //
     //
     //
     echo json_encode($saida); //envio todos os dados encontrados em formato JSON
@@ -193,27 +203,50 @@ function addMembro($conn,$obj){
 //
 //**************************************************************//
 //**************************************************************//
+function mostraPastores($conn,$obj){
+    //
+    //mostra as igrejas
+    //$link é a conexao
+    //
+    $membro_nome = $obj->membro_nome;
+    //
+    $sql = "SELECT * FROM membros,membro_igreja WHERE membro_igreja.cpf_membro = membros.cpf AND membros.cpf NOT IN (SELECT cpf_pastor FROM igreja_pastor) AND membros.nome LIKE '%" .$membro_nome . "%'";
+    //
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    //$saida = ["msg"=>$sql];
+    //
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
+
+}
 function addPastor($conn,$obj){
     //
-    //insere um pastor
+    //insere um pastor na tabela igreja_pastor.
+    //
+    //um pastor é um membro cujo CPF está na tabela IGREJA_PASTOR
+    //
     //$link é a conexão
     //
-    $pastores_data_posse        = $obj->pastores_data_posse;
-    $pastores_empossador        = $obj->pastores_empossador;
-    $pastores_cpf               = $obj->pastores_cpf;
+    $pastores_cpf   = $obj->pastores_cpf; //membro q será o pastor
+    //
+    $pastor_igreja  = $obj->pastor_igreja; //igreja a qual ele (membro) é compromissado
+    //
+    $txt_dados  = "(" . $pastores_cpf . ",";
+    $txt_dados  .= "'" . $pastor_igreja . "')";
 
-    $txt_dados  = "(DATE('" . $pastores_data_posse . "'),";
-    $txt_dados  .= "'" . $pastores_empossador . "',";
-    $txt_dados  .= "" . $pastores_cpf . ")";
-
-    $sql = "INSERT INTO pastores (data_posse,empossador,cpf) VALUES " . $txt_dados;
+    $sql = "INSERT INTO igreja_pastor (cpf_pastor, nome_igreja) VALUES " . $txt_dados;
 
     $resultado = exQuery($conn,$sql);
+    //
+    $resultado = mysqli_error($conn);
     //
     $saida = ["msg"=>$resultado]; //apenas para mandar sempre um json, aqui ainda não é um json
     //
     //
-    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
+    echo json_encode($resultado); //envio todos os dados encontrados em formato JSON
 }
 
 
