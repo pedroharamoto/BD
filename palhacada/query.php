@@ -244,8 +244,14 @@ function mostraPastores($conn,$obj){
     //$link é a conexao
     //
     $membro_nome = $obj->membro_nome;
+    $nome_igreja = $obj->membro_igreja_nome;
     //
     $sql = "SELECT * FROM membros,membro_igreja WHERE membro_igreja.cpf_membro = membros.cpf AND membros.cpf NOT IN (SELECT cpf_pastor FROM igreja_pastor) AND membros.nome LIKE '%" .$membro_nome . "%'";
+    //
+    if($nome_igreja){
+        //se uma igreja for selecionada...
+        $sql .= " AND membro_igreja.nome_igreja = '" . $nome_igreja . "'";
+    }
     //
     $resultado = exQuery($conn,$sql);
     $saida = array();

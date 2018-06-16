@@ -42,7 +42,8 @@ function addPastor(ordem,pastores_cpf,pastor_membro_igreja){
                     texto_retorno = "Membro já é pastor!";
                 }
             }
-            $("#msg_pastor").append(texto_retorno);
+            $("#msg_pastor"+pastores_cpf).empty();
+            $("#msg_pastor"+pastores_cpf).append(texto_retorno);
         }
     };
     //
@@ -292,18 +293,6 @@ function show_pastores_mesmo(ordem,membro_igreja_nome,proc_pastor_nome){
 
                     texto_retorno +=    '<div class="row">';
 
-                    texto_retorno +=     '<input type="hidden" id="membro_ig'+retorno[i].cpf+'" value="'+retorno[i].nome_igreja+'" type="text">';
-
-                    texto_retorno +=        '<div class="col-md-10">';
-                    texto_retorno +=            '<div id="msg_pastor"></div>';
-                    texto_retorno +=        '</div>';
-
-                    texto_retorno +=        '<div class="col-md-10">';
-                    texto_retorno +=            '<div class="alinhamento">';
-                    texto_retorno +=                '<input class="btn btn-success" id="btn_promover" onclick="envia2(88,'+retorno[i].cpf+')" type="button" value="Promover"></input>';
-                    texto_retorno +=            '</div>';
-                    texto_retorno +=        '</div>';
-
                     texto_retorno +=    '</div>';
 
                     texto_retorno += '</div>';
@@ -355,6 +344,7 @@ function show_pastores(ordem,membro_igreja_nome,membro_nome){
             //recebo todos o resultado da query realizada, em formato JSON
             //
             retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //console.log(retorno);
             //
             //
             if(retorno.length == 0 || retorno == ""){
@@ -401,7 +391,7 @@ function show_pastores(ordem,membro_igreja_nome,membro_nome){
                     texto_retorno +=     '<input type="hidden" id="membro_ig'+retorno[i].cpf+'" value="'+retorno[i].nome_igreja+'" type="text">';
 
                     texto_retorno +=        '<div class="col-md-10">';
-                    texto_retorno +=            '<div id="msg_pastor"></div>';
+                    texto_retorno +=            '<div id="msg_pastor'+retorno[i].cpf+'"></div>';
                     texto_retorno +=        '</div>';
 
                     texto_retorno +=        '<div class="col-md-10">';
