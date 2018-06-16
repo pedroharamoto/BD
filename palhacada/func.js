@@ -736,6 +736,7 @@ function checa_cpf(cpf) {
 	for (var i = 11; i > 1; i--){
 		soma += parseInt(cpf[j++])*i;
 	}
+	resto = (soma*10)%11;
     if (resto == 10){
 		resto = 0;
 	}
