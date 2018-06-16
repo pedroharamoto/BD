@@ -47,6 +47,7 @@ function exQuery($conn, $sql){
     $result = $conn->query($sql);
 
     return $result;
+
 }
 //**************************************************************//
 //**************************************************************//
@@ -241,12 +242,9 @@ function addPastor($conn,$obj){
 
     $resultado = exQuery($conn,$sql);
     //
-    $resultado = mysqli_error($conn);
+    $saida = ["msg"=>mysqli_errno($conn)];
     //
-    $saida = ["msg"=>$resultado]; //apenas para mandar sempre um json, aqui ainda não é um json
-    //
-    //
-    echo json_encode($resultado); //envio todos os dados encontrados em formato JSON
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
 
 

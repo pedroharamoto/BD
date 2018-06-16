@@ -31,12 +31,18 @@ function addPastor(ordem,pastores_cpf,pastor_membro_igreja){
             retorno = this.responseText;
             //
             //
-            console.log(retorno);
             retorno = JSON.parse(retorno);
+            console.log(retorno.msg);
             //
-            //
-            //
-            $("#msg_pastor").append(retorno.msg);
+            if(retorno.msg == 0){
+                texto_retorno = "Membro promovido!";
+            }
+            else{
+                if(retorno.msg == 1062){
+                    texto_retorno = "Membro já é pastor!";
+                }
+            }
+            $("#msg_pastor").append(texto_retorno);
         }
     };
     //
@@ -508,8 +514,6 @@ function envia(ordem){
             return;
         }
         addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,membro_sexo,membro_email,membro_telefone,membro_rua,membro_numero,membro_complemento,membro_cep,membro_bairro,membro_cidade,membro_uf);
-
-
     }
     else if(ordem == 57){ //procura um membro de uma igreja dada
         //
