@@ -612,6 +612,60 @@ function envia(ordem){
             $("#membro_sexo").focus();
             return;
         }
+        if(membro_nome == "") {
+        	alert('Insira o nome completo.');
+        	$("#membro_nome").focus();
+            return;
+        }
+        //nao ta funcionando ou eu nao sei o meu cpf IUHDSAD,ASDASHKJSAHDAKJSHDSAKJH
+        if (checa_cpf(membro_cpf) == false) {
+        	alert('CPF inválido.');
+        	$("#membro_cpf").focus();
+            return;
+        }
+        if (membro_sexo == 0) {
+        	alert('Por favor, escolha um sexo.');
+        	$("#membro_sexo").focus();
+            return;
+        }
+        if (membro_uf == 0) {
+        	alert('Por favor, selecione um estado.');
+        	$("#membro_uf").focus();
+            return;
+        }
+        if (membro_cidade == ""){
+        	alert('Cidade inválida.');
+        	$("#membro_cidade").focus();
+            return;
+        }
+        if (membro_bairro == ""){
+        	alert('Bairro inválido.');
+        	$("#membro_bairro").focus();
+            return;
+        }
+        if (membro_cep.toString().length != 12){
+        	alert('CEP inválido.');
+        	$("#membro_cep").focus();
+            return;
+        }
+        if (membro_numero == "") {
+        	alert('Insira um número.');
+        	$("#membro_numero").focus();
+            return;
+        }
+        if (membro_rua == "") {
+        	alert('Insira uma rua.');
+        	$("#membro_rua").focus();
+            return;
+        }
+        if (membro_telefone == "") {
+        	alert('Insira um telefone.');
+        	$("#membro_telefone").focus();
+            return;
+        }
+
+        //data_nasc vai ser só confiança na máscara mesmo
+
         addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,membro_sexo,membro_email,membro_telefone,membro_rua,membro_numero,membro_complemento,membro_cep,membro_bairro,membro_cidade,membro_uf);
     }
     else if(ordem == 57){ //procura um membro de uma igreja dada
@@ -649,4 +703,44 @@ function envia(ordem){
         show_pastores_mesmo(ordem,membro_igreja_nome,proc_pastor_nome);
     }
 
+}
+function checa_cpf(cpf) {
+	//lista de CPFs inválidos, mas não por causa da fórmula
+    var cpf = cpf.toString();
+    //
+	if (cpf == "00000000000" || cpf == "11111111111" ||cpf == "22222222222" ||cpf == "33333333333" ||cpf == "44444444444" ||cpf == "55555555555" ||cpf == "66666666666" ||cpf == "77777777777" ||cpf == "88888888888" ||cpf == "99999999999") {
+		return false;
+	}
+
+	var soma = 0;
+	var resto = 0;
+	var j = 0;
+
+	//1ª parte da verificação
+	for (var i = 10; i > 1; i--){
+		soma+=parseInt(cpf[j++])*i;
+    }
+
+    resto = (soma*10)%11;
+
+    if (resto == 10){
+		resto = 0;
+	}
+    if (parseInt(cpf[j]) != resto){
+		return false;
+    }
+	//2ª parte da verificação
+	soma = 0;
+	j = 0;
+
+	for (var i = 11; i > 1; i--){
+		soma += parseInt(cpf[j++])*i;
+	}
+    if (resto == 10){
+		resto = 0;
+	}
+    if (parseInt(cpf[j]) != resto){
+		return false;
+    }
+	return true;
 }
