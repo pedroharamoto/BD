@@ -8,6 +8,56 @@ function carregar(pagina){
 //
 //
 //
+function addRede(ordem,rede_cor,igreja_nome){
+    //
+    //função para criar uma REDE
+    //
+    var dados = {
+            "funcao" : ordem,
+            "rede_cor" : rede_cor,
+            "igreja_nome" : igreja_nome
+    };
+    //
+    var parametros = JSON.stringify(dados);
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            retorno = this.responseText;
+            //
+            console.log(retorno);
+            //
+            //
+            retorno = JSON.parse(retorno);
+            //
+            if(retorno.msg == 0){
+                texto_retorno = "Rede criada!";
+            }
+            else{
+                if(retorno.msg == 1062){
+                    texto_retorno = "Rede já existe!";
+                }
+                else{
+                    texto_retorno = "Erro desconhecido!";
+                }
+            }
+            $("#plot").empty();
+            $("#plot").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+}
+//
+//
+//
 function show_celula(ordem,cel_nome,cel_cidade,cel_uf){
     //
     //função para mostrar os pastores
@@ -21,7 +71,7 @@ function show_celula(ordem,cel_nome,cel_cidade,cel_uf){
         "cel_uf" : cel_uf
     };
     //
-    parametros = JSON.stringify(dados);
+    var parametros = JSON.stringify(dados);
     //
     var n = 0;
     //
@@ -1206,8 +1256,48 @@ function envia(ordem){
 
         show_celula(ordem,cel_nome,cel_cidade,cel_uf);
     }
+    else if(ordem == 300){
 
+        var rede_cor    = $("#rede_cor").val();
+        var igreja_nome = $("#membro_igreja_nome").val();
+
+        if(igreja_nome == 0){
+            alert('É necessário informar uma igreja!')
+            return;
+        }
+
+        addRede(ordem,rede_cor,igreja_nome);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function checa_cpf(cpf) {
 	//lista de CPFs inválidos, mas não por causa da fórmula
     var cpf = cpf.toString();

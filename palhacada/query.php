@@ -52,6 +52,10 @@ else if($ordem == 201){
     //mostra as celulas
     mostraCel($conn,$obj);
 }
+else if($ordem == 300){
+    //add uma Rede
+    addRede($conn,$obj);
+}
 //**************************************************************//
 //**************************************************************//
 //
@@ -429,7 +433,48 @@ function addCel($conn,$obj){
     //
     echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
+//**************************************************************//
+//**************************************************************//
+//
+//FUNÇÕES PARA REDES
+//
+//**************************************************************//
+//**************************************************************//
+function addRede($conn,$obj){
+    //
+    //função para add uma REDE
+    //
 
+    $rede_cor       = $obj->rede_cor;
+    $igreja_nome    = $obj->igreja_nome;
+
+    $txt_dados = "('" . $rede_cor . "')";
+
+    $sql = "INSERT INTO rede (cor) VALUES " . $txt_dados;
+    //
+    $resultado = exQuery($conn,$sql);
+    //
+    //se resultado == true, então linka rede a igreja
+    //
+    if($resultado){
+        //TEM Q CRIAR A TABELA DESSA RELAÇÃO
+        $id_rede = mysqli_insert_id($conn); //essa função retorna o ID da inserção anterior.
+        //o ID tem q ser AUTO INCREMENT
+        $txt_dados = "";
+        //
+        $txt_dados .= "('" . $igreja_nome . "',";
+        $txt_dados .= "" . $id_rede . ")";
+        //
+        $sql = "INSERT INTO rede_igreja (nome_igreja,rede_id) VALUES " . $txt_dados;
+        //
+        $resultado = exQuery($conn,$sql);
+        //
+    }
+    //
+    $saida = ["msg"=>mysqli_errno($conn)];
+    //
+    echo json_encode($saida);
+}
 
 
 $conn->close(); //sempre será executado se der um include ao "conecta.php"

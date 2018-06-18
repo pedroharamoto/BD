@@ -1,0 +1,82 @@
+<!-- CORPO DO SITE -->
+<script type="text/javascript">
+  var header = $('#cabecalho');
+
+  header.empty();
+  header.append('<h1>Mostrar Redes da igreja do vitor</h1>');
+</script>
+
+<div class="row border-bot">
+  <div class="col-md-12">
+      <p></p>
+  </div>
+</div>
+
+<div class="row">
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Igreja:</span>
+                <div id="lista_igrejas">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Preletor:</span>
+                <input value="" id="culto_preletor" type="text" class="form-control" placeholder="Procuro por preletores" aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Data:</span>
+                <input value="" id="culto_data" type="text" class="form-control" placeholder="Procure por data" aria-describedby="basic-addon1">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <p></p>
+    </div>
+
+    <div class="row">
+        <div class="alinhamento">
+            <div class="col-md-4">
+                <input class="btn btn-success" id="btn_procura_cultos" onclick="envia(124)" type="button" value="Procurar"></input>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <p></p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+          <div id="mostra_culto">
+
+              <p></p>
+
+          </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+show_lista_igrejas();
+
+});
+
+</script>
