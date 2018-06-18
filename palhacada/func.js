@@ -68,6 +68,15 @@ function show_celula(ordem,cel_nome,cel_cidade,cel_uf){
                     texto_retorno += '' + retorno[i].cidade + ' - ' + retorno[i].uf;
                     texto_retorno += '<div class="collapse" id="collapse'+n+'">';
                     texto_retorno +=    '<div class="well">';
+                    texto_retorno +=        '<p class="recuo"><b>Status:</b> ';
+
+                                            if(retorno[i].status == 1){
+                                                texto_retorno += 'Ativa';
+                                            }
+                                            else{
+                                                texto_retorno += 'Desativada';
+                                            }
+                    texto_retorno +=        '</p>';
                     texto_retorno +=        '<p class="recuo">';
                     texto_retorno +=            '<b>Dia da semana:</b> ';
 
@@ -979,7 +988,6 @@ function show_igrejas(){
                 for (i in retorno) {
 
                     texto_retorno += '<tr>';
-                    texto_retorno += '<td>';
                     texto_retorno += '<td>'+ parseInt(parseInt(i)+1) +'</td>';
                     texto_retorno +='<td>'+retorno[i].nome+'</td>';
                     texto_retorno +='<td>'+retorno[i].cidade+'</td>';
@@ -1061,11 +1069,11 @@ function envia(ordem){
             return;
         }
         //nao ta funcionando ou eu nao sei o meu cpf IUHDSAD,ASDASHKJSAHDAKJSHDSAKJH
-        if (checa_cpf(membro_cpf) == false) {
-        	alert('CPF inválido.');
-        	$("#membro_cpf").focus();
-            return;
-        }
+        //if (checa_cpf(membro_cpf) == false) {
+        //	alert('CPF inválido.');
+        //	$("#membro_cpf").focus();
+        //    return;
+        //}
         if (membro_sexo == 0) {
         	alert('Por favor, escolha um sexo.');
         	$("#membro_sexo").focus();
