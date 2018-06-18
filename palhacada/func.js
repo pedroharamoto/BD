@@ -8,6 +8,182 @@ function carregar(pagina){
 //
 //
 //
+function show_celula(ordem,cel_nome,cel_cidade,cel_uf){
+    //
+    //função para mostrar os pastores
+    //
+    $("#mostra_celulas").empty();
+    //
+    var dados = {
+        "funcao" : ordem,
+        "cel_nome" : cel_nome,
+        "cel_cidade" : cel_cidade,
+        "cel_uf" : cel_uf
+    };
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var n = 0;
+    //
+    var texto_retorno = ""; //corpo da div
+    //
+    //aqui vai começar o codigo para o AJAX-PHP
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            console.log(this.responseText);
+            //
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //
+            //
+            if(retorno.length == 0 || retorno == ""){
+                //não encontrou nenhum resultado
+                texto_retorno += "<p>Não há CÉULAS!</p>";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                texto_retorno += '<table class="table table-striped" style="width:100%;"><thead><tr><th style="width:30%;">Nome</th><th style="width:70%;">Cidade - UF</th></tr></thead>';
+                texto_retorno += '<tbody>';
+                //
+                for (i in retorno) {
+
+                    n = parseInt(parseInt(i)+1);
+
+                    texto_retorno += '<tr>';
+                    texto_retorno += '<td><a role="button" data-toggle="collapse" href="#collapse'+n+'" aria-expanded="false" aria-controls="collapse'+n+'">';
+                    texto_retorno += '' + retorno[i].nome + '';
+                    texto_retorno += '</a></td>';
+                    texto_retorno +='<td>';
+
+                    texto_retorno += '' + retorno[i].cidade + ' - ' + retorno[i].uf;
+                    texto_retorno += '<div class="collapse" id="collapse'+n+'">';
+                    texto_retorno +=    '<div class="well">';
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Dia da semana:</b> ';
+
+                                                if(retorno[i].feira == 1){
+                                                    texto_retorno += 'Segunda-Feira';
+                                                }
+                                                else if(retorno[i].feira == 2){
+                                                    texto_retorno += 'Terça-Feira';
+                                                }
+                                                else if(retorno[i].feira == 3){
+                                                    texto_retorno += 'Quarta-Feira';
+                                                }
+                                                else if(retorno[i].feira == 4){
+                                                    texto_retorno += 'Quinta-Feira';
+                                                }
+                                                else if(retorno[i].feira == 5){
+                                                    texto_retorno += 'Sexta-Feira';
+                                                }
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Horário:</b> '+ retorno[i].n_membros + '';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Presentes:</b> ' + retorno[i].rua;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Oferta:</b> ' + retorno[i].numero;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Dízimo:</b> ' + retorno[i].bairro;
+                    texto_retorno +=        '</p>';
+                    texto_retorno +=    '</div>';
+                    texto_retorno += '</div>';
+
+                    texto_retorno += '</td>';
+
+                    texto_retorno += '</tr>';
+
+                }
+                texto_retorno += '</tbody></table>';
+            }
+            $("#mostra_celulas").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+}
+
+//
+//
+//
+function addCel(ordem,cel_nome,cel_rua,cel_numero,cel_bairro,cel_complemento,cel_cidade,cel_uf,cel_feira,cel_quantidade){
+    //
+    //função para add uma celula
+    //
+    var dados = {
+        "funcao" : ordem,
+        "cel_nome" : cel_nome,
+        "cel_rua" : cel_rua,
+        "cel_numero" : cel_numero,
+        "cel_bairro" : cel_bairro,
+        "cel_complemento" : cel_complemento,
+        "cel_cidade" : cel_cidade,
+        "cel_uf" : cel_uf,
+        "cel_feira" : cel_feira,
+        "cel_quantidade" : cel_quantidade
+    };
+    //
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var texto_retorno = "";
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            retorno = this.responseText;
+            //
+            console.log(retorno);
+            //
+            //
+            retorno = JSON.parse(retorno);
+            //
+            if(retorno.msg == 0){
+                texto_retorno = "Célula criada!";
+            }
+            else{
+                if(retorno.msg == 1062){
+                    texto_retorno = "Célula já existe!";
+                }
+            }
+            $("#plot").empty();
+            $("#plot").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+}
+//
+//
+//
 function show_culto(ordem,igreja_nome,culto_data,culto_preletor){
     //
     //função para mostrar os pastores
@@ -162,8 +338,6 @@ function addCulto(ordem,igreja_nome,culto_data,culto_hora,culto_preletor,culto_p
     xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
-
-
 }
 
 //
@@ -1002,7 +1176,28 @@ function envia(ordem){
         //
         show_culto(ordem,igreja_nome,culto_data,culto_preletor);
     }
+    else if(ordem == 200){ //add uma celula
 
+        var cel_nome        = $("#cel_nome").val();
+        var cel_rua         = $("#cel_rua").val();
+        var cel_numero      = $("#cel_numero").val();
+        var cel_bairro      = $("#cel_bairro").val();
+        var cel_complemento = $("#cel_complemento").val();
+        var cel_cidade      = $("#cel_cidade").val();
+        var cel_uf          = $("#cel_uf").val();
+        var cel_feira       = $("#cel_feira").val();
+        var cel_quantidade  = $("#cel_quantidade").val();
+        //
+        addCel(ordem,cel_nome,cel_rua,cel_numero,cel_bairro,cel_complemento,cel_cidade,cel_uf,cel_feira,cel_quantidade);
+    }
+    else if(ordem == 201){ //mostra as celulas
+
+        var cel_nome        = $("#cel_nome").val();
+        var cel_cidade      = $("#cel_cidade").val();
+        var cel_uf          = $("#cel_uf").val();
+
+        show_celula(ordem,cel_nome,cel_cidade,cel_uf);
+    }
 
 }
 function checa_cpf(cpf) {

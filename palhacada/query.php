@@ -44,6 +44,14 @@ else if($ordem == 124){
     //mostra os cultos
     mostraCulto($conn,$obj);
 }
+else if($ordem == 200){
+    //add uma celula
+    addCel($conn,$obj);
+}
+else if($ordem == 201){
+    //mostra as celulas
+    mostraCel($conn,$obj);
+}
 //**************************************************************//
 //**************************************************************//
 //
@@ -348,6 +356,72 @@ function addCulto($conn,$obj){
     $txt_dados  .= "" . $culto_dizimo . ")";
 
     $sql = "INSERT INTO culto (nome_igreja, data, horario, preletor, presentes, oferta, dizimo) VALUES " . $txt_dados;
+
+    $resultado = exQuery($conn,$sql);
+    //
+    $saida = ["msg"=>mysqli_errno($conn)];
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
+}
+//**************************************************************//
+//**************************************************************//
+//
+//FUNÇÕES PARA CELULAS
+//
+//**************************************************************//
+//**************************************************************//
+function mostraCel($conn,$obj){
+    //
+    //mostra os cultos
+    //
+    $cel_nome   = $obj->cel_nome;
+    $cel_cidade = $obj->cel_cidade;
+    $cel_uf     = $obj->cel_uf;
+    //
+    $condicoes = "";
+    //
+    if($cel_nome != 0){
+        $condicoes .= " AND nome like '%" . $cel_nome . "%'";
+    }
+    if($cel_cidade != ""){
+        $condicoes .= " AND cidade like '%" . $cel_cidade . "%'";
+    }
+    if($cel_uf != "0"){
+        $condicoes .= " AND uf = '" . $cel_uf . "'";
+    }
+    //
+    $sql = "SELECT * FROM celula WHERE 1 " . $condicoes;
+    //
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    //
+    echo json_encode($saida);
+}
+function addCel($conn,$obj){
+    //add culto
+    $cel_nome           = $obj->cel_nome;
+    $cel_rua            = $obj->cel_rua;
+    $cel_numero         = $obj->cel_numero;
+    $cel_bairro         = $obj->cel_bairro;
+    $cel_complemento    = $obj->cel_complemento;
+    $cel_cidade         = $obj->cel_cidade;
+    $cel_uf             = $obj->cel_uf;
+    $cel_feira          = $obj->cel_feira;
+    $cel_quantidade     = $obj->cel_quantidade;
+    //
+    $txt_dados  = "('" . $cel_nome . "',";
+    $txt_dados  .= "'" . $cel_rua . "',";
+    $txt_dados  .= ""  . $cel_numero . ",";
+    $txt_dados  .= "'" . $cel_bairro . "',";
+    $txt_dados  .= "'" . $cel_complemento . "',";
+    $txt_dados  .= "'" . $cel_cidade . "',";
+    $txt_dados  .= "'" . $cel_uf . "',";
+    $txt_dados  .= "'" . $cel_feira . "',";
+    $txt_dados  .= ""  . $cel_quantidade . ")";
+
+    $sql = "INSERT INTO celula (nome, rua, numero, bairro, complemento, cidade, uf, feira, n_membros) VALUES " . $txt_dados;
 
     $resultado = exQuery($conn,$sql);
     //

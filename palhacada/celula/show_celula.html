@@ -1,0 +1,110 @@
+<!-- CORPO DO SITE -->
+<script type="text/javascript">
+  var header = $('#cabecalho');
+
+  header.empty();
+  header.append('<h1>Mostrar Células da igreja do vitor</h1>');
+</script>
+
+<div class="row border-bot">
+  <div class="col-md-12">
+      <p></p>
+  </div>
+</div>
+
+<div class="row">
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Nome:</span>
+                <input value="" id="cel_nome" type="text" class="form-control" placeholder="Procura por Nome" aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Cidade:</span>
+                <input value="" id="cel_cidade" type="text" class="form-control" placeholder="Procura por Cidade" aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">UF:</span>
+                <select class="form-control" name="cel_uf" id="cel_uf">
+                    <option value="0">Procure por Estado</option>
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <p></p>
+    </div>
+
+    <div class="row">
+        <div class="alinhamento">
+            <div class="col-md-4">
+                <input class="btn btn-success" id="btn_procura_celulas" onclick="envia(201)" type="button" value="Procurar"></input>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <p></p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+          <div id="mostra_celulas">
+
+              <p></p>
+
+          </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+show_lista_igrejas();
+
+});
+
+</script>
