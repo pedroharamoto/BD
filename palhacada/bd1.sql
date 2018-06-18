@@ -1,32 +1,9 @@
--- phpMyAdmin SQL Dump
--- version 4.7.4
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: 16-Jun-2018 às 06:34
--- Versão do servidor: 10.1.28-MariaDB
--- PHP Version: 7.1.10
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `bd1`
---
-
--- --------------------------------------------------------
-
---
 -- Estrutura da tabela `celula`
---
 
 CREATE TABLE `celula` (
   `nome` varchar(255) NOT NULL,
@@ -38,30 +15,13 @@ CREATE TABLE `celula` (
   `uf` varchar(2) NOT NULL,
   `cep` varchar(8) NOT NULL,
   `feira` varchar(10) NOT NULL,
-  `n_membros` tinyint(4) NOT NULL DEFAULT '0'
+  `n_membros` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`nome`,`cidade`,`uf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
---
--- Estrutura da tabela `culto`
---
-
-CREATE TABLE `culto` (
-  `data` date NOT NULL,
-  `horario` time NOT NULL,
-  `presentes` tinyint(4) NOT NULL,
-  `oferta` float NOT NULL,
-  `dizimo` float NOT NULL,
-  `preletor` varchar(255) NOT NULL,
-  `nome_igreja` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Estrutura da tabela `igreja`
---
 
 CREATE TABLE `igreja` (
   `nome` varchar(255) NOT NULL,
@@ -72,12 +32,125 @@ CREATE TABLE `igreja` (
   `cidade` varchar(255) NOT NULL,
   `uf` varchar(2) NOT NULL,
   `cep` varchar(8) NOT NULL,
-  `n_membros` smallint(5) UNSIGNED NOT NULL DEFAULT '0'
+  `n_membros` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`nome`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
+-- Estrutura da tabela `membros`
+
+CREATE TABLE `membros` (
+  `cpf` bigint(20) NOT NULL,
+  `nome` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `telefone` varchar(15) DEFAULT NULL,
+  `sexo` enum('M','F') NOT NULL,
+  `cidade` varchar(255) NOT NULL,
+  `uf` varchar(2) NOT NULL,
+  `cep` varchar(8) NOT NULL,
+  `data_nasc` date NOT NULL,
+  `rua` varchar(255) NOT NULL,
+  `numero` varchar(10) NOT NULL,
+  `bairro` varchar(255) NOT NULL,
+  `complemento` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`cpf`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Estrutura da tabela `rede`
+
+CREATE TABLE `rede` (
+  `cod_rede` int(11) NOT NULL AUTO_INCREMENT,
+  `cor` varchar(15) NOT NULL,
+  PRIMARY KEY (`cod_rede`),
+  UNIQUE (`cod_rede`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- Constraints for dumped tables
+
+-- RELAÇÕES:
+
+CREATE TABLE `igreja_pastor` (
+  `cpf_pastor` bigint(20) NOT NULL,
+  `nome_igreja` varchar(255) NOT NULL,
+  PRIMARY KEY (`cpf_pastor`, `nome_igreja`),
+  CONSTRAINT `igreja_pastor_nome_igreja_FK` FOREIGN KEY (`nome_igreja`) REFERENCES `igreja` (`nome`),
+  CONSTRAINT `igreja_pastor_cpf_FK` FOREIGN KEY (`cpf_pastor`) REFERENCES `membros` (`cpf`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `membro_celula`
+( `cpf_membro` BIGINT NOT NULL ,
+  `nome_celula` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
+  `cidade_celula` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
+  `uf_celula` VARCHAR(2) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
+  PRIMARY KEY (`cpf_membro`, `nome_celula`, `cidade_celula`, `uf_celula`),
+  CONSTRAINT `celula_membro_FK` FOREIGN KEY (`nome_celula`, `cidade_celula`, `uf_celula`) REFERENCES `celula` (`nome`, `cidade`, `uf`),
+  CONSTRAINT `cpf_membro_celula_FK` FOREIGN KEY (`cpf_membro`) REFERENCES `membros`(`cpf`))
+  ENGINE = InnoDB;
+
+CREATE TABLE `membro_igreja` (
+  `cpf_membro` bigint(20) NOT NULL,
+  `nome_igreja` varchar(255) NOT NULL,
+  PRIMARY KEY (`cpf_membro`, `nome_igreja`),
+  CONSTRAINT `membro_igreja_cpf_FK` FOREIGN KEY (`cpf_membro`) REFERENCES `membros`(`cpf`),
+  CONSTRAINT `membro_igreja_nome_igreja_FK` FOREIGN KEY (`nome_igreja`) REFERENCES `igreja` (`nome`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `reuniao_celula` (
+  `data` date NOT NULL,
+  `horario` time NOT NULL,
+  `presentes` tinyint(4) NOT NULL,
+  `visitantes` tinyint(4) NOT NULL,
+  `oferta` float NOT NULL,
+  `nome_celula` varchar(255) NOT NULL,
+  `cidade_celula` VARCHAR(255) NOT NULL ,
+  `uf_celula` VARCHAR(2) NOT NULL ,
+  PRIMARY KEY (`nome_celula`, `cidade_celula`, `uf_celula`, `data`),
+  CONSTRAINT `reuniao_celula_FK` FOREIGN KEY (`nome_celula`, `cidade_celula`, `uf_celula`) REFERENCES `celula` (`nome`, `cidade`, `uf`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `lider_rede` (
+  `cpf_membro` bigint NOT NULL,
+  `cod_rede` int NOT NULL, 
+  PRIMARY KEY (`cpf_membro`, `cod_rede`),
+  CONSTRAINT `lide_rede_cpf_FK` FOREIGN KEY (`cpf_membro`) REFERENCES `membros` (`cpf`),
+  CONSTRAINT `lide_rede_cod_FK` FOREIGN KEY (`cod_rede`) REFERENCES `rede` (`cod_rede`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `rede_celula` (
+  `cod_rede` int NOT NULL,
+  `nome_celula` varchar(255) NOT NULL,
+  `cidade_celula` VARCHAR(255) NOT NULL ,
+  `uf_celula` VARCHAR(2) NOT NULL ,
+  PRIMARY KEY (`nome_celula`, `cidade_celula`, `uf_celula`, `cod_rede`),
+  CONSTRAINT `rede_celula_FK` FOREIGN KEY (`nome_celula`, `cidade_celula`, `uf_celula`) REFERENCES `celula` (`nome`, `cidade`, `uf`),
+  CONSTRAINT `rede_celula_cod_FK` FOREIGN KEY (`cod_rede`) REFERENCES `rede` (`cod_rede`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `lider_celula` (
+  `cpf` bigint NOT NULL,
+  `nome_celula` varchar(255) NOT NULL,
+  `cidade_celula` VARCHAR(255) NOT NULL,
+  `uf_celula` VARCHAR(2) NOT NULL,
+  PRIMARY KEY (`nome_celula`, `cidade_celula`, `uf_celula`, `cpf`),
+  CONSTRAINT `lider_celula_FK` FOREIGN KEY (`nome_celula`, `cidade_celula`, `uf_celula`) REFERENCES `celula` (`nome`, `cidade`, `uf`),
+  CONSTRAINT `lider_celula_cpf_FK` FOREIGN KEY (`cpf`) REFERENCES `membros` (`cpf`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `culto` (
+  `data` date NOT NULL,
+  `horario` time NOT NULL,
+  `presentes` tinyint(4) NOT NULL,
+  `oferta` float NOT NULL,
+  `dizimo` float NOT NULL,
+  `preletor` varchar(255) NOT NULL,
+  `nome_igreja` varchar(255) NOT NULL,
+  PRIMARY KEY (`nome_igreja`,`data`,`horario`),
+  CONSTRAINT `Igreja_FK` FOREIGN KEY (`nome_igreja`) REFERENCES `igreja` (`nome`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- INSERÇÕES TESTE (MOCKUPS)
 -- Extraindo dados da tabela `igreja`
---
 
 INSERT INTO `igreja` (`nome`, `rua`, `numero`, `complemento`, `bairro`, `cidade`, `uf`, `cep`, `n_membros`) VALUES
 ('123', 'rua', '1', 'complemento', 'bairro', 'cidade', '0', '12345-12', 0),
@@ -98,69 +171,7 @@ INSERT INTO `igreja` (`nome`, `rua`, `numero`, `complemento`, `bairro`, `cidade`
 ('igreja985d', 'rua', '1-50', 'complemento', 'bairro', 'cidade', '0', '12345-12', 0),
 ('TESTE_MEMBRO_IGREJA', 'rua', '1', 'complemento', 'bairro', 'cidade', '0', '12345-12', 0);
 
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `igreja_pastor`
---
-
-CREATE TABLE `igreja_pastor` (
-  `cpf_pastor` bigint(20) NOT NULL,
-  `nome_igreja` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Extraindo dados da tabela `igreja_pastor`
---
-
-INSERT INTO `igreja_pastor` (`cpf_pastor`, `nome_igreja`) VALUES
-(-413, 'igreja5555'),
-(124, 'TESTE_MEMBRO_IGREJA'),
-(125, 'TESTE_MEMBRO_IGREJA'),
-(557, '123'),
-(15977, 'TESTE_MEMBRO_IGREJA'),
-(21312, '184'),
-(74511, 'TESTE_MEMBRO_IGREJA'),
-(124781, 'BBBBBBBBBBBB'),
-(654564, 'TESTE_MEMBRO_IGREJA'),
-(57506574, '1577');
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `lideres`
---
-
-CREATE TABLE `lideres` (
-  `data_posse` date NOT NULL,
-  `cpf` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `membros`
---
-
-CREATE TABLE `membros` (
-  `cpf` bigint(20) NOT NULL,
-  `nome` varchar(255) NOT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `telefone` varchar(15) DEFAULT NULL,
-  `sexo` enum('M','F') NOT NULL,
-  `cidade` varchar(255) NOT NULL,
-  `uf` varchar(2) NOT NULL,
-  `cep` varchar(8) NOT NULL,
-  `data_nasc` date NOT NULL,
-  `rua` varchar(255) NOT NULL,
-  `numero` varchar(10) NOT NULL,
-  `bairro` varchar(255) NOT NULL,
-  `complemento` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
 -- Extraindo dados da tabela `membros`
---
 
 INSERT INTO `membros` (`cpf`, `nome`, `email`, `telefone`, `sexo`, `cidade`, `uf`, `cep`, `data_nasc`, `rua`, `numero`, `bairro`, `complemento`) VALUES
 (-413, 'AaE', 'aea@asde.com', '(18)99874-5784', '', 'cidade', '0', '12345-12', '0000-00-00', 'rua', '1', 'bairro', 'complemento'),
@@ -183,19 +194,23 @@ INSERT INTO `membros` (`cpf`, `nome`, `email`, `telefone`, `sexo`, `cidade`, `uf
 (30057107258, 'AaE', 'aea@asde.com', '(18)99874-5784', '', 'cidade', '0', '12345-12', '0000-00-00', 'rua', '1', 'bairro', 'complemento');
 
 -- --------------------------------------------------------
+-- Extraindo dados da tabela `igreja_pastor`
 
---
--- Estrutura da tabela `membro_igreja`
---
+INSERT INTO `igreja_pastor` (`cpf_pastor`, `nome_igreja`) VALUES
+(-413, 'igreja5555'),
+(124, 'TESTE_MEMBRO_IGREJA'),
+(125, 'TESTE_MEMBRO_IGREJA'),
+(557, '123'),
+(15977, 'TESTE_MEMBRO_IGREJA'),
+(21312, '184'),
+(74511, 'TESTE_MEMBRO_IGREJA'),
+(124781, 'BBBBBBBBBBBB'),
+(654564, 'TESTE_MEMBRO_IGREJA'),
+(57506574, '1577');
 
-CREATE TABLE `membro_igreja` (
-  `cpf_membro` bigint(20) NOT NULL,
-  `nome_igreja` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- --------------------------------------------------------
 
---
 -- Extraindo dados da tabela `membro_igreja`
---
 
 INSERT INTO `membro_igreja` (`cpf_membro`, `nome_igreja`) VALUES
 (15977, 'TESTE_MEMBRO_IGREJA'),
@@ -212,163 +227,4 @@ INSERT INTO `membro_igreja` (`cpf_membro`, `nome_igreja`) VALUES
 (8784, 'igrej1a'),
 (99784, 'igrej1a');
 
---
--- Acionadores `membro_igreja`
---
-DELIMITER $$
-CREATE TRIGGER `contador_igreja_add` AFTER INSERT ON `membro_igreja` FOR EACH ROW UPDATE igreja SET n_membros = n_membros +1
-	WHERE nome = NEW.nome_igreja
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `contador_igreja_remove` AFTER DELETE ON `membro_igreja` FOR EACH ROW UPDATE igreja SET n_membros = n_membros - 1
-	WHERE nome = OLD.nome_igreja
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `contador_igreja_update` AFTER UPDATE ON `membro_igreja` FOR EACH ROW BEGIN
-	UPDATE igreja SET n_membros = n_membros - 1
-	WHERE nome = OLD.nome_igreja;
-	UPDATE igreja SET n_membros = n_membros + 1
-	WHERE nome = NEW.nome_igreja;
-END
-$$
-DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `rede`
---
-
-CREATE TABLE `rede` (
-  `cod_rede` int(11) NOT NULL,
-  `cor` varchar(15) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `reuniao_celula`
---
-
-CREATE TABLE `reuniao_celula` (
-  `data` date NOT NULL,
-  `horario` time NOT NULL,
-  `presentes` tinyint(4) NOT NULL,
-  `visitantes` tinyint(4) NOT NULL,
-  `oferta` float NOT NULL,
-  `nome_celula` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `celula`
---
-ALTER TABLE `celula`
-  ADD PRIMARY KEY (`nome`,`cidade`,`uf`);
-
---
--- Indexes for table `culto`
---
-ALTER TABLE `culto`
-  ADD PRIMARY KEY (`nome_igreja`,`data`,`horario`);
-
---
--- Indexes for table `igreja`
---
-ALTER TABLE `igreja`
-  ADD PRIMARY KEY (`nome`);
-
---
--- Indexes for table `igreja_pastor`
---
-ALTER TABLE `igreja_pastor`
-  ADD PRIMARY KEY (`cpf_pastor`,`nome_igreja`),
-  ADD KEY `igreja_pastor_FK` (`nome_igreja`);
-
---
--- Indexes for table `lideres`
---
-ALTER TABLE `lideres`
-  ADD PRIMARY KEY (`cpf`);
-
---
--- Indexes for table `membros`
---
-ALTER TABLE `membros`
-  ADD PRIMARY KEY (`cpf`);
-
---
--- Indexes for table `membro_igreja`
---
-ALTER TABLE `membro_igreja`
-  ADD KEY `cpf_membro_FK` (`cpf_membro`),
-  ADD KEY `membro_igreja_FK` (`nome_igreja`);
-
---
--- Indexes for table `rede`
---
-ALTER TABLE `rede`
-  ADD UNIQUE KEY `cod_rede` (`cod_rede`);
-
---
--- Indexes for table `reuniao_celula`
---
-ALTER TABLE `reuniao_celula`
-  ADD PRIMARY KEY (`data`,`horario`,`nome_celula`) USING BTREE,
-  ADD KEY `Celula_FK` (`nome_celula`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `rede`
---
-ALTER TABLE `rede`
-  MODIFY `cod_rede` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Constraints for dumped tables
---
-
---
--- Limitadores para a tabela `culto`
---
-ALTER TABLE `culto`
-  ADD CONSTRAINT `Igreja_FK` FOREIGN KEY (`nome_igreja`) REFERENCES `igreja` (`nome`);
-
---
--- Limitadores para a tabela `igreja_pastor`
---
-ALTER TABLE `igreja_pastor`
-  ADD CONSTRAINT `igreja_pastor_FK` FOREIGN KEY (`nome_igreja`) REFERENCES `igreja` (`nome`),
-  ADD CONSTRAINT `membro_cpf_FK` FOREIGN KEY (`cpf_pastor`) REFERENCES `membros` (`cpf`);
-
---
--- Limitadores para a tabela `lideres`
---
-ALTER TABLE `lideres`
-  ADD CONSTRAINT `LiderMembro_FK` FOREIGN KEY (`cpf`) REFERENCES `membros` (`cpf`);
-
---
--- Limitadores para a tabela `membro_igreja`
---
-ALTER TABLE `membro_igreja`
-  ADD CONSTRAINT `cpf_membro_FK` FOREIGN KEY (`cpf_membro`) REFERENCES `membros` (`cpf`),
-  ADD CONSTRAINT `membro_igreja_FK` FOREIGN KEY (`nome_igreja`) REFERENCES `igreja` (`nome`);
-
---
--- Limitadores para a tabela `reuniao_celula`
---
-ALTER TABLE `reuniao_celula`
-  ADD CONSTRAINT `Celula_FK` FOREIGN KEY (`nome_celula`) REFERENCES `celula` (`nome`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
