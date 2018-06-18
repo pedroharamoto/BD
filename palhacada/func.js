@@ -8,6 +8,276 @@ function carregar(pagina){
 //
 //
 //
+function show_culto(ordem,igreja_nome,culto_data,culto_preletor){
+    //
+    //função para mostrar os pastores
+    //
+    $("#mostra_culto").empty();
+    //
+    var dados = {
+        "funcao" : ordem,
+        "igreja_nome" : igreja_nome,
+        "culto_data" : culto_data,
+        "culto_preletor" : culto_preletor
+    };
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var n = 0;
+    //
+    var texto_retorno = ""; //corpo da div
+    //
+    //aqui vai começar o codigo para o AJAX-PHP
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            console.log(this.responseText);
+            //
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //
+            //
+            if(retorno.length == 0 || retorno == ""){
+                //não encontrou nenhum resultado
+                texto_retorno += "<p>Não há CULTOS para esta igreja!";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                texto_retorno += '<table class="table table-striped" style="width:100%;"><thead><tr><th style="width:30%;">Preletor</th><th style="width:70%;">Igreja</th></tr></thead>';
+                texto_retorno += '<tbody>';
+                //
+                for (i in retorno) {
+
+                    n = parseInt(parseInt(i)+1);
+
+                    texto_retorno += '<tr>';
+                    texto_retorno += '<td><a role="button" data-toggle="collapse" href="#collapse'+n+'" aria-expanded="false" aria-controls="collapse'+n+'">';
+                    texto_retorno += '' + retorno[i].preletor + '';
+                    texto_retorno += '</a></td>';
+                    texto_retorno +='<td>';
+
+                    texto_retorno += '' + retorno[i].nome_igreja + '';
+                    texto_retorno += '<div class="collapse" id="collapse'+n+'">';
+                    texto_retorno +=    '<div class="well">';
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Data:</b> '+ retorno[i].data + '';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Horário:</b> '+ retorno[i].horario + '';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Presentes:</b> ' + retorno[i].presentes;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Oferta:</b> ' + retorno[i].oferta;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Dízimo:</b> ' + retorno[i].dizimo;
+                    texto_retorno +=        '</p>';
+                    texto_retorno +=    '</div>';
+                    texto_retorno += '</div>';
+
+                    texto_retorno += '</td>';
+
+                    texto_retorno += '</tr>';
+
+                }
+                texto_retorno += '</tbody></table>';
+            }
+            $("#mostra_culto").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+}
+//
+//
+//
+function addCulto(ordem,igreja_nome,culto_data,culto_hora,culto_preletor,culto_presentes,culto_oferta,culto_dizimo){
+    //
+    //função para add um culto
+    //
+    //
+    var dados = {
+        "funcao" : ordem,
+        "igreja_nome" : igreja_nome,
+        "culto_data" : culto_data,
+        "culto_hora" : culto_hora,
+        "culto_preletor" : culto_preletor,
+        "culto_presentes" : culto_presentes,
+        "culto_oferta" : culto_oferta,
+        "culto_dizimo" : culto_dizimo
+    };
+    //
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var texto_retorno = "";
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            retorno = this.responseText;
+            //
+            console.log(retorno);
+            //
+            //
+            retorno = JSON.parse(retorno);
+            //
+            if(retorno.msg == 0){
+                texto_retorno = "Culto criado!";
+            }
+            else{
+                if(retorno.msg == 1062){
+                    texto_retorno = "Culto já existe!";
+                }
+            }
+            $("#plot").empty();
+            $("#plot").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+
+
+}
+
+//
+//
+//
+function show_lideres(ordem,membro_igreja_nome,membro_nome){
+    //
+    //função para mostrar os pastores
+    //
+    $("#mostra_membros_igrejas").empty();
+    //
+    var dados = {
+        "funcao" : ordem,
+        "membro_igreja_nome" : membro_igreja_nome,
+        "membro_nome" : membro_nome
+    };
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var n = 0;
+    //
+    var texto_retorno = ""; //corpo da div
+    //
+    //aqui vai começar o codigo para o AJAX-PHP
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //console.log(retorno);
+            //
+            //
+            if(retorno.length == 0 || retorno == ""){
+                //não encontrou nenhum resultado
+                texto_retorno += "<p>Não há LíDERES nesta igreja!";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                texto_retorno += '<table class="table table-striped" style="width:75%;"><thead><tr><th style="width:5%;">#</th><th style="width:95%;">Nome</th><th>&nbsp;</th></tr></thead>';
+                texto_retorno += '<tbody>';
+                //
+                for (i in retorno) {
+
+                    n = parseInt(parseInt(i)+1);
+
+                    texto_retorno += '<tr>';
+                    texto_retorno += '<td>'+ n +'</td>';
+                    texto_retorno +='<td>';
+
+                    texto_retorno += '<a role="button" data-toggle="collapse" href="#collapse'+n+'" aria-expanded="false" aria-controls="collapse'+n+'">';
+                    texto_retorno += '' + retorno[i].nome + '';
+                    texto_retorno += '</a>';
+
+                    texto_retorno += '<div class="collapse" id="collapse'+n+'">';
+                    texto_retorno +=    '<div class="well">';
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            'CPF: '+ retorno[i].cpf + '<br>';
+                    texto_retorno +=        '</p>';
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            'Igreja: '+ retorno[i].nome_igreja + '<br>';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            'Endereço: ' + retorno[i].rua + ', ' + retorno[i].numero;
+                    texto_retorno +=            ', ' + retorno[i].bairro + ', ' + retorno[i].cep;
+                    texto_retorno +=        '</p>';
+                    texto_retorno +=    '</div>';
+
+                    texto_retorno +=    '<div class="row">';
+
+                    texto_retorno +=     '<input type="hidden" id="membro_ig'+retorno[i].cpf+'" value="'+retorno[i].nome_igreja+'" type="text">';
+
+                    texto_retorno +=        '<div class="col-md-10">';
+                    texto_retorno +=            '<div id="msg_pastor'+retorno[i].cpf+'"></div>';
+                    texto_retorno +=        '</div>';
+
+                    texto_retorno +=        '<div class="col-md-10">';
+                    texto_retorno +=            '<div class="alinhamento">';
+                    texto_retorno +=                '<input class="btn btn-success" id="btn_promover" onclick="envia2(78,'+retorno[i].cpf+')" type="button" value="Promover"></input>';
+                    texto_retorno +=            '</div>';
+                    texto_retorno +=        '</div>';
+
+                    texto_retorno +=    '</div>';
+
+                    texto_retorno += '</div>';
+                    texto_retorno += '</td>';
+
+                    texto_retorno += '</tr>';
+
+                }
+                texto_retorno += '</tbody></table>';
+            }
+            $("#mostra_membros_igrejas").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+}
+//
+//
+//
 function addPastor(ordem,pastores_cpf,pastor_membro_igreja){
     //função para add um pastor a uma igreja
     $("#plot").empty();
@@ -261,7 +531,7 @@ function show_pastores_mesmo(ordem,membro_igreja_nome,proc_pastor_nome){
                 //encontrou
                 //irei criar a tabela para mostrar o resultado da query
                 //
-                texto_retorno += '<table class="table table-striped" style="width:75%;"><thead><tr><th style="width:5%;">#</th><th style="width:95%;">Nome</th><th>&nbsp;</th></tr></thead>';
+                texto_retorno += '<table class="table table-striped" style="width:100%;"><thead><tr><th style="width:5%;">#</th><th style="width:95%;">Nome</th></tr></thead>';
                 texto_retorno += '<tbody>';
                 //
                 for (i in retorno) {
@@ -356,7 +626,7 @@ function show_pastores(ordem,membro_igreja_nome,membro_nome){
                 //encontrou
                 //irei criar a tabela para mostrar o resultado da query
                 //
-                texto_retorno += '<table class="table table-striped" style="width:75%;"><thead><tr><th style="width:5%;">#</th><th style="width:95%;">Nome</th><th>&nbsp;</th></tr></thead>';
+                texto_retorno += '<table class="table table-striped" style="width:100%;"><thead><tr><th style="width:5%;">#</th><th style="width:95%;">Nome</th></tr></thead>';
                 texto_retorno += '<tbody>';
                 //
                 for (i in retorno) {
@@ -600,7 +870,6 @@ function envia(ordem){
         var membro_bairro       = $("#membro_bairro").val();
         var membro_cidade       = $("#membro_cidade").val();
         var membro_uf           = $("#membro_uf").val();
-
         //
         if(membro_igreja_nome == 0){
             alert('É necessário escolher uma igreja');
@@ -702,6 +971,38 @@ function envia(ordem){
         //
         show_pastores_mesmo(ordem,membro_igreja_nome,proc_pastor_nome);
     }
+    else if(ordem == 68){ //procura membros não líderes
+        //
+        var membro_igreja_nome = $("#membro_igreja_nome").val();
+        var membro_nome = $("#proc_membro_nome").val();
+        //
+        if (!membro_nome){
+            membro_nome = "";
+        }
+        //
+        show_pastores(ordem,membro_igreja_nome,membro_nome);
+    }
+    else if(ordem == 123){ //add um culto
+        //
+        var igreja_nome     = $("#membro_igreja_nome").val();
+        var culto_data      = $("#culto_data").val();
+        var culto_hora      = $("#culto_horario").val();
+        var culto_preletor  = $("#culto_preletor").val();
+        var culto_presentes = $("#culto_presentes").val();
+        var culto_oferta    = $("#culto_oferta").val();
+        var culto_dizimo    = $("#culto_dizimo").val();
+        //
+        addCulto(ordem,igreja_nome,culto_data,culto_hora,culto_preletor,culto_presentes,culto_oferta,culto_dizimo);
+    }
+    else if(ordem == 124){ //mostra cultos de igrejas e datas
+        //
+        var igreja_nome     = $("#membro_igreja_nome").val();
+        var culto_data      = $("#culto_data").val();
+        var culto_preletor  = $("#culto_preletor").val();
+        //
+        show_culto(ordem,igreja_nome,culto_data,culto_preletor);
+    }
+
 
 }
 function checa_cpf(cpf) {

@@ -1,0 +1,154 @@
+<!-- CORPO DO SITE -->
+<script type="text/javascript">
+  var header = $('#cabecalho');
+
+  header.empty();
+  header.append('<h1>Adicionar culto da igreja do vitor</h1>');
+</script>
+
+<div class="row border-bot">
+  <div class="col-md-12">
+      <p></p>
+  </div>
+</div>
+
+<div class="row">
+
+  <div class="col-md-12">
+
+    <div class="row">
+
+        <div class="row">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Igreja:</span>
+                    <div id="lista_igrejas">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Data:</span>
+                    <input value="2018/06/15" id="culto_data" type="text" class="form-control" placeholder="Data de Nascimento" aria-describedby="basic-addon1">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Horário:</span>
+                    <input value="17:00" id="culto_horario" type="text" class="form-control" placeholder="Horário do Culto" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+          <p></p>
+        </div>
+
+        <div class="row">
+          <div class="col-md-5">
+              <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">Preletor:</span>
+                  <input value="aa aua yrrehb" id="culto_preletor" type="text" class="form-control" placeholder="Preletor do Culto" aria-describedby="basic-addon1">
+              </div>
+          </div>
+
+          <div class="col-md-3">
+              <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">Qte de Presentes:</span>
+                  <input value="57" id="culto_presentes" type="text" class="form-control" placeholder="Presentes" aria-describedby="basic-addon1">
+              </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <p></p>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Oferta:</span>
+                    <input value="58" id="culto_oferta" type="text" class="form-control" placeholder="Oferta" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <p></p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Dízimo:</span>
+                    <input value="150" id="culto_dizimo" type="text" class="form-control" placeholder="Dízimo" aria-describedby="basic-addon1">
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div class="row">
+      <p></p>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+      </div>
+      <div class="col-md-6">
+        <div class="alinhamento">
+          <input class="btn btn-success" id="btn_add_culto" onclick="envia(123)" type="button" value="Cadastrar"></input>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <p></p>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <a role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          + Info
+        </a>
+        <div class="collapse" id="collapseExample">
+          <div class="well">
+            <p class="recuo">
+                PÁGINA PARA ADICIONAR UM CULTO.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <p></p>
+    </div>
+    <div class="col-md-1">
+        <p></p>
+    </div>
+    <div class="col-md-6">
+        <div id="plot">
+            <!-- retorno do ajax -->
+        </div>
+    </div>
+</div>
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+show_lista_igrejas();
+
+});
+
+</script>

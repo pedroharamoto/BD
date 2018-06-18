@@ -36,6 +36,14 @@ else if($ordem == 59){
     //mostra um membro de uma igreja
     mostraPastoresMesmo($conn,$obj);
 }
+else if($ordem == 123){
+    //add um culto
+    addCulto($conn,$obj);
+}
+else if($ordem == 124){
+    //mostra os cultos
+    mostraCulto($conn,$obj);
+}
 //**************************************************************//
 //**************************************************************//
 //
@@ -261,7 +269,6 @@ function mostraPastores($conn,$obj){
     //
     //
     echo json_encode($saida); //envio todos os dados encontrados em formato JSON
-
 }
 function addPastor($conn,$obj){
     //
@@ -286,8 +293,68 @@ function addPastor($conn,$obj){
     //
     echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
+//**************************************************************//
+//**************************************************************//
+//
+//FUNÇÕES PARA CULTO
+//
+//**************************************************************//
+//**************************************************************//
+function mostraCulto($conn,$obj){
+    //
+    //mostra os cultos
+    //
+    $igreja_nome    = $obj->igreja_nome;
+    $culto_data     = $obj->culto_data;
+    $culto_preletor = $obj->culto_preletor;
+    //
+    $condicoes = "";
+    //
+    if($igreja_nome != 0){
+        $condicoes .= " AND nome_igreja = '" . $igreja_nome . "'";
+    }
+    if($culto_data != ""){
+        $condicoes .= " AND data like '%" . $culto_data . "%'";
+    }
+    if($culto_preletor != ""){
+        $condicoes .= " AND preletor like '%" . $culto_preletor . "%'";
+    }
+    //
+    $sql = "SELECT * FROM culto WHERE 1 " . $condicoes;
+    //
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    echo json_encode($saida);
+}
+//
+function addCulto($conn,$obj){
+    //add culto
+    $igreja_nome        = $obj->igreja_nome;
+    $culto_data         = $obj->culto_data;
+    $culto_hora         = $obj->culto_hora;
+    $culto_preletor     = $obj->culto_preletor;
+    $culto_presentes    = $obj->culto_presentes;
+    $culto_oferta       = $obj->culto_oferta;
+    $culto_dizimo       = $obj->culto_dizimo;
+    //
+    $txt_dados  = "('" . $igreja_nome . "',";
+    $txt_dados  .= "DATE('" . $culto_data . "'),";
+    $txt_dados  .= "'" . $culto_hora . "',";
+    $txt_dados  .= "'" . $culto_preletor . "',";
+    $txt_dados  .= "" . $culto_presentes . ",";
+    $txt_dados  .= "" . $culto_oferta . ",";
+    $txt_dados  .= "" . $culto_dizimo . ")";
 
+    $sql = "INSERT INTO culto (nome_igreja, data, horario, preletor, presentes, oferta, dizimo) VALUES " . $txt_dados;
 
+    $resultado = exQuery($conn,$sql);
+    //
+    $saida = ["msg"=>mysqli_errno($conn)];
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
+}
 
 
 
