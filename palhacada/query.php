@@ -60,6 +60,10 @@ else if($ordem == 202){
     //mostra as celulas
     mostraRedes_cel($conn,$obj);
 }
+else if($ordem == 204){
+    //mostra as celulas
+    mostraCelulas($conn,$obj);
+}
 else if($ordem == 300){
     //add uma Rede
     addRede($conn,$obj);
@@ -428,6 +432,30 @@ function addCulto($conn,$obj){
 //
 //**************************************************************//
 //**************************************************************//
+function mostraCelulas($conn,$obj){
+
+    $rede_cor = $obj->rede_cor;
+    $nome_igreja = $obj->nome_igreja;
+    $condicao = "";
+
+    if($rede_cor != ""){
+        $condicao .= " AND cor_rede = '" . $rede_cor . "'";
+    }
+    if($nome_igreja){
+        $condicao .= " AND nome_igreja = '" . $nome_igreja . "'";
+    }
+
+    $sql = "SELECT * FROM rede_celula WHERE 1 " . $condicao;
+
+    $saida = ["msg"=>$sql];
+
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    //
+    echo json_encode($saida);
+}
 function mostraRedes_cel($conn,$obj){
 
     $nome_igreja = $obj->nome_igreja;
@@ -442,6 +470,7 @@ function mostraRedes_cel($conn,$obj){
     //
     echo json_encode($saida);
 }
+//
 function mostraCel($conn,$obj){
     //
     //mostra os cultos

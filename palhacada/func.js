@@ -8,7 +8,81 @@ function carregar(pagina){
 //
 //
 //
+function showcelula(ordem, nome_igreja,rede_cor){
+    //
+    $("#mostra_celulas").empty();
+    //
+    var dados = {
+        "funcao" : ordem,
+        "nome_igreja" : nome_igreja,
+        "rede_cor" : rede_cor
+    }
+    //
+    texto_retorno = "";
+    //
+    var parametros = JSON.stringify(dados);
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //
+            //
+            if(retorno.length == 0 || retorno == ""){
+                //não encontrou nenhum resultado
+                texto_retorno += "<p>Não há Líderes para esta igreja!";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                texto_retorno += '<table class="table table-striped" style="width:100%;"><thead><tr><th style="width:20%;">Cor</th><th style="width:30%;">Igreja</th><th style="width:50%;">Nome da célula</th></tr></thead>';
+                texto_retorno += '<tbody>';
+                //
+                for (i in retorno) {
 
+                    n = parseInt(parseInt(i)+1);
+
+                    texto_retorno += '<tr>';
+                    texto_retorno += '<td>';
+                    texto_retorno += '' + retorno[i].cor_rede + '';
+                    texto_retorno += '</td>';
+                    texto_retorno +='<td>';
+
+                    texto_retorno += '' + retorno[i].nome_igreja + '';
+                    texto_retorno += '</td>';
+
+                    texto_retorno += '<td>';
+                    texto_retorno += '' + retorno[i].nome_celula + '';
+                    texto_retorno += '</td>';
+
+                    texto_retorno += '</tr>';
+
+                }
+                texto_retorno += '</tbody></table>';
+            }
+            $("#mostra_celulas").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+
+
+}
+//
+//
+//
 function mostraRedes(ordem, rede_cor, nome_igreja, lider_nome){
 
     var dados = {
@@ -1718,13 +1792,24 @@ function envia(ordem){
             return;
         }
         addRede(ordem,rede_cor,igreja_nome,membro_cpf);
-    }else if(ordem == 302){
+    }
+    else if(ordem == 302){
 
         var rede_cor    = $("#rede_cor").val();
         var igreja_nome = $("#membro_igreja_nome").val();
         var lider_nome  = $("#lider_nome").val();
 
         mostraRedes(ordem,rede_cor,igreja_nome,lider_nome);
+    }
+    else if(ordem == 204){
+        var igreja_nome = $("#membro_igreja_nome").val();
+        var rede_cor    = $("#igreja_rede").val();
+        //
+        if(!rede_cor){
+            rede_cor = "";
+        }
+
+        showcelula(ordem,igreja_nome,rede_cor);
     }
 }
 function envia_edita_membro(ordem,cpf){
