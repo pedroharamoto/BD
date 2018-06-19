@@ -82,7 +82,9 @@ function showcelula(ordem, nome_igreja,rede_cor){
 //
 //
 function mostraRedes(ordem, rede_cor, nome_igreja, lider_nome){
-
+    //
+    $("#mostra_redes").empty();
+    //
     var dados = {
         "funcao" : ordem,
         "rede_cor" : rede_cor,
@@ -121,7 +123,7 @@ function mostraRedes(ordem, rede_cor, nome_igreja, lider_nome){
                 //encontrou
                 //irei criar a tabela para mostrar o resultado da query
                 //
-                texto_retorno += '<table class="table table-striped" style="width:100%;"><thead><tr><th style="width:30%;">Preletor</th><th style="width:70%;">Igreja</th></tr></thead>';
+                texto_retorno += '<table class="table table-striped" style="width:100%;"><thead><tr><th style="width:20%;">Cor</th><th style="width:30%;">Igreja</th><th style="width:50%;">Líder</th></tr></thead>';
                 texto_retorno += '<tbody>';
                 //
                 for (i in retorno) {
@@ -129,44 +131,26 @@ function mostraRedes(ordem, rede_cor, nome_igreja, lider_nome){
                     n = parseInt(parseInt(i)+1);
 
                     texto_retorno += '<tr>';
-                    texto_retorno += '<td><a role="button" data-toggle="collapse" href="#collapse'+n+'" aria-expanded="false" aria-controls="collapse'+n+'">';
-                    texto_retorno += '' + retorno[i].preletor + '';
-                    texto_retorno += '</a></td>';
-                    texto_retorno +='<td>';
 
-                    texto_retorno += '' + retorno[i].nome_igreja + '';
-                    texto_retorno += '<div class="collapse" id="collapse'+n+'">';
-                    texto_retorno +=    '<div class="well">';
-                    texto_retorno +=        '<p class="recuo">';
-                    texto_retorno +=            '<b>Data:</b> '+ retorno[i].data + '';
-                    texto_retorno +=        '</p>';
-
-                    texto_retorno +=        '<p class="recuo">';
-                    texto_retorno +=            '<b>Horário:</b> '+ retorno[i].horario + '';
-                    texto_retorno +=        '</p>';
-
-                    texto_retorno +=        '<p class="recuo">';
-                    texto_retorno +=            '<b>Presentes:</b> ' + retorno[i].presentes;
-                    texto_retorno +=        '</p>';
-
-                    texto_retorno +=        '<p class="recuo">';
-                    texto_retorno +=            '<b>Oferta:</b> ' + retorno[i].oferta;
-                    texto_retorno +=        '</p>';
-
-                    texto_retorno +=        '<p class="recuo">';
-                    texto_retorno +=            '<b>Dízimo:</b> ' + retorno[i].dizimo;
-                    texto_retorno +=        '</p>';
-                    texto_retorno +=    '</div>';
-                    texto_retorno += '</div>';
-
+                    texto_retorno += '<td>';
+                    texto_retorno += '' + retorno[i].cor + '';
                     texto_retorno += '</td>';
+
+                    texto_retorno +='<td>';
+                    texto_retorno += '' + retorno[i].nome_igreja + '';
+                    texto_retorno += '</td>';
+
+                    texto_retorno += '<td>';
+                    texto_retorno += '' + retorno[i].nome + '';
+                    texto_retorno += '</td>';
+
 
                     texto_retorno += '</tr>';
 
                 }
                 texto_retorno += '</tbody></table>';
             }
-            $("#mostra_culto").append(texto_retorno);
+            $("#mostra_redes").append(texto_retorno);
         }
     };
     //

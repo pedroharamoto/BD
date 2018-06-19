@@ -598,24 +598,27 @@ function mostraRedes($conn, $obj){
 
     $condicoes = "";
     //
-    if($nome_igreja != 0){
-        $condicoes .= " AND rede.nome_igreja = ". $nome_igreja . "" ;
+    if($nome_igreja){
+        $condicoes .= " AND rede.nome_igreja = '". $nome_igreja . "'" ;
     }
     if($rede_cor != ""){
         $condicoes .= " AND rede.cor like '%" . $rede_cor . "%'";
     }
-    if($lider_nome != "0"){
+    if($lider_nome != ""){
         $condicoes .= "AND membros.nome LIKE '%" . $lider_nome . "%'";
     }
     //
     $sql = "SELECT * FROM rede, membros where membros.cpf = rede.lider " . $condicoes;
     //
-    //$resultado = exQuery($conn,$sql);
-    //$saida = array();
-    //$saida = $resultado->fetch_all(MYSQLI_ASSOC);
-    //
-    $saida= ["msg"=>$sql];
-    //
+
+    //saida = ["msg",$sql];
+
+    //echo json_encode($saida);
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+
+
     echo json_encode($saida);
 }
 
