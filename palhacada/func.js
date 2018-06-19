@@ -8,6 +8,63 @@ function carregar(pagina){
 //
 //
 //
+function edit_membro(ordem,cpf){
+    //
+    //função para editar um MEMBRO
+    //
+    $("#mostra_membros_igrejas").empty();
+    //
+    var dados = {
+            "funcao" : ordem,
+            "membro_cpf" : cpf
+    };
+    //
+    texto_retorno = "";
+    //
+    var parametros = JSON.stringify(dados);
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            retorno = this.responseText;
+            //
+            console.log(retorno);
+            //
+            //
+            retorno = JSON.parse(retorno);
+            //
+            texto_retorno += '<div class="row">';
+            texto_retorno +=    '<div class="col-md-12">';
+
+            texto_retorno +=        '<div class="row">';
+
+            texto_retorno +=            '';
+
+
+
+            texto_retorno +=        '</div>'
+
+            texto_retorno +=    '</div>';
+            texto_retorno += '</div>';
+            //
+            $("#mostra_membros_igrejas").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+
+
+}
+//
+//
+//
 function addRede(ordem,rede_cor,igreja_nome){
     //
     //função para criar uma REDE
@@ -560,6 +617,63 @@ function addPastor(ordem,pastores_cpf,pastor_membro_igreja){
 //
 //
 //
+function editMembro(ordem,membro_igreja,membro_nome,membro_cpf,membro_nasc,membro_sexo,membro_email,membro_telefone,membro_rua,membro_numero,membro_complemento,membro_cep,membro_bairro,membro_cidade,membro_uf){
+    //função para editar um membro
+    $("#plot").empty();
+    //
+    var dados = {
+            "funcao" : ordem,
+            "membro_igreja" : membro_igreja,
+            "membro_nome" : membro_nome,
+            "membro_cpf" : membro_cpf,
+            "membro_nasc" : membro_nasc,
+            "membro_sexo" : membro_sexo,
+            "membro_email" : membro_email,
+            "membro_telefone" : membro_telefone,
+            "membro_rua" : membro_rua,
+            "membro_numero" : membro_numero,
+            "membro_complemento" : membro_complemento,
+            "membro_cep" : membro_cep,
+            "membro_bairro" : membro_bairro,
+            "membro_cidade" : membro_cidade,
+            "membro_uf" : membro_uf
+    };
+    parametros = JSON.stringify(dados);
+    //
+    var texto_retorno = "";
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            retorno = this.responseText;
+            //
+            retorno = JSON.parse(retorno);
+            //
+            console.log(retorno);
+            //
+            if(retorno.msg === false){
+                texto_retorno = "ERRO!<br>"+membro_cpf+" já existe!";
+            }
+            else{
+                texto_retorno = "Membro " + membro_cpf + " cadastrado!";
+            }
+            //
+            $("#plot").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+}
+//
+//
+//
 function addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,membro_sexo,membro_email,membro_telefone,membro_rua,membro_numero,membro_complemento,membro_cep,membro_bairro,membro_cidade,membro_uf){
     //função para add um membro
     $("#plot").empty();
@@ -938,6 +1052,8 @@ function show_membros(ordem,membro_igreja_nome,membro_nome){
     //
     parametros = JSON.stringify(dados);
     //
+    var n = 0;
+    //
     var texto_retorno = ""; //corpo da div
     //
     //aqui vai começar o codigo para o AJAX-PHP
@@ -952,27 +1068,97 @@ function show_membros(ordem,membro_igreja_nome,membro_nome){
             //recebo todos o resultado da query realizada, em formato JSON
             //
             retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //console.log(retorno);
             //
             //
             if(retorno.length == 0 || retorno == ""){
                 //não encontrou nenhum resultado
-                texto_retorno += "<p>Não há membros nesta igreja!";
+                texto_retorno += "<p>Não há PASTORES nesta igreja!";
             }
             else{
                 //
                 //encontrou
                 //irei criar a tabela para mostrar o resultado da query
                 //
-                texto_retorno += '<table class="table table-striped"><thead><tr><th>#</th><th>Nome</th><th>CPF</th></tr></thead>';
+                texto_retorno += '<table class="table table-striped" style="width:100%;"><thead><tr><th style="width:5%;">#</th><th style="width:95%;">Nome</th></tr></thead>';
                 texto_retorno += '<tbody>';
                 //
                 for (i in retorno) {
 
+                    n = parseInt(parseInt(i)+1);
+
                     texto_retorno += '<tr>';
-                    texto_retorno += '<td>';
-                    texto_retorno += '<td>'+ parseInt(parseInt(i)+1) +'</td>';
-                    texto_retorno +='<td>'+retorno[i].nome+'</td>';
-                    texto_retorno +='<td>'+retorno[i].cpf+'</td>';
+                    texto_retorno += '<td>'+ n +'</td>';
+                    texto_retorno +='<td>';
+
+                    texto_retorno += '<a role="button" data-toggle="collapse" href="#collapse'+n+'" aria-expanded="false" aria-controls="collapse'+n+'">';
+                    texto_retorno += '' + retorno[i].nome + '';
+                    texto_retorno += '</a>';
+
+                    texto_retorno += '<div class="collapse" id="collapse'+n+'">';
+                    texto_retorno +=    '<div class="well">';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>CPF:</b> '+ retorno[i].cpf + '<br>';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Sexo: </b>';
+
+                                            if(retorno[i].sexo == 'F'){
+                                                texto_retorno += 'Feminino <br>';
+                                            }
+                                            else{
+                                                texto_retorno += 'Masculino <br>';
+                                            }
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Igreja:</b> '+ retorno[i].nome_igreja + '<br>';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Endereço:</b> ' + retorno[i].rua + ', ' + retorno[i].numero;
+                    texto_retorno +=            ', ' + retorno[i].bairro + ', ' + retorno[i].complemento + ', ' + retorno[i].cep + ', ' + retorno[i].cidade;
+                    texto_retorno +=            ' - ' + retorno[i].uf;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Data Nasc.: </b>' + retorno[i].data_nasc + '<br>';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Telefone: </b>' + retorno[i].telefone + '<br>';
+                    texto_retorno +=        '</p>';
+
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>E-mail: </b>' + retorno[i].email + '<br>';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=    '</div>';
+
+                    texto_retorno +=    '<div class="row">';
+
+                    //texto_retorno +=     '<input type="hidden" id="membro_cpf'+retorno[i].cpf+'" value="'+retorno[i].cpf+'" type="text">';
+
+                    texto_retorno +=        '<div class="col-md-10">';
+                    texto_retorno +=            '<div id="msg_pastor'+retorno[i].cpf+'"></div>';
+                    texto_retorno +=        '</div>';
+
+                    texto_retorno +=    '</div>';
+
+                    texto_retorno += '<div class="row">'
+                        texto_retorno += '<div class="col-md-12">'
+                            texto_retorno += '<input class="btn btn-warning" id="btn_edit_membro" onclick="envia_edita_membro(13,'+retorno[i].cpf+')" type="button" value="Editar"></input>';
+                            texto_retorno += '&nbsp;';
+                            texto_retorno += '<input class="btn btn-danger" id="btn_exlcui_membro" onclick="envia_exclui_membro(14,'+retorno[i].cpf+')" type="button" value="Excluir"></input>';
+                        texto_retorno += '</div>';
+                    texto_retorno += '</div>';
+
+                    texto_retorno += '</div>';
+                    texto_retorno += '</td>';
+
                     texto_retorno += '</tr>';
 
                 }
@@ -1144,7 +1330,7 @@ function envia(ordem){
         	$("#membro_bairro").focus();
             return;
         }
-        if (membro_cep.toString().length != 12){
+        if (membro_cep.toString().length != 8){
         	alert('CEP inválido.');
         	$("#membro_cep").focus();
             return;
@@ -1169,14 +1355,94 @@ function envia(ordem){
 
         addMembro(ordem,membro_igreja_nome,membro_nome,membro_cpf,membro_nasc,membro_sexo,membro_email,membro_telefone,membro_rua,membro_numero,membro_complemento,membro_cep,membro_bairro,membro_cidade,membro_uf);
     }
+    else if(ordem == 33){//edita um membro
+        //
+        var membro_igreja       = $("#membro_igreja").val();
+        var membro_nome         = $("#membro_nome").val();
+        var membro_cpf          = $("#membro_cpf").val();
+        var membro_nasc         = $("#membro_nasc").val();
+        var membro_sexo         = $("#membro_sexo").val();
+        var membro_email        = $("#membro_email").val();
+        var membro_telefone     = $("#membro_telefone").val();
+        var membro_rua          = $("#membro_rua").val();
+        var membro_numero       = $("#membro_numero").val();
+        var membro_complemento  = $("#membro_complemento").val();
+        var membro_cep          = $("#membro_cep").val();
+        var membro_bairro       = $("#membro_bairro").val();
+        var membro_cidade       = $("#membro_cidade").val();
+        var membro_uf           = $("#membro_uf").val();
+        //
+        if(membro_igreja_nome == 0){
+            alert('É necessário escolher uma igreja');
+            $("#membro_igreja_nome").focus();
+            return;
+        }
+        if(membro_sexo == 0){
+            alert('É necessário informar o sexo');
+            $("#membro_sexo").focus();
+            return;
+        }
+        if(membro_nome == "") {
+            alert('Insira o nome completo.');
+            $("#membro_nome").focus();
+            return;
+        }
+        //nao ta funcionando ou eu nao sei o meu cpf IUHDSAD,ASDASHKJSAHDAKJSHDSAKJH
+        //if (checa_cpf(membro_cpf) == false) {
+        //	alert('CPF inválido.');
+        //	$("#membro_cpf").focus();
+        //    return;
+        //}
+        if (membro_sexo == 0) {
+            alert('Por favor, escolha um sexo.');
+            $("#membro_sexo").focus();
+            return;
+        }
+        if (membro_uf == 0) {
+            alert('Por favor, selecione um estado.');
+            $("#membro_uf").focus();
+            return;
+        }
+        if (membro_cidade == ""){
+            alert('Cidade inválida.');
+            $("#membro_cidade").focus();
+            return;
+        }
+        if (membro_bairro == ""){
+            alert('Bairro inválido.');
+            $("#membro_bairro").focus();
+            return;
+        }
+        if (membro_cep.toString().length != 8){
+            alert('CEP inválido.');
+            $("#membro_cep").focus();
+            return;
+        }
+        if (membro_numero == "") {
+            alert('Insira um número.');
+            $("#membro_numero").focus();
+            return;
+        }
+        if (membro_rua == "") {
+            alert('Insira uma rua.');
+            $("#membro_rua").focus();
+            return;
+        }
+        if (membro_telefone == "") {
+            alert('Insira um telefone.');
+            $("#membro_telefone").focus();
+            return;
+        }
+
+        //data_nasc vai ser só confiança na máscara mesmo
+
+        editMembro(ordem,membro_igreja,membro_nome,membro_cpf,membro_nasc,membro_sexo,membro_email,membro_telefone,membro_rua,membro_numero,membro_complemento,membro_cep,membro_bairro,membro_cidade,membro_uf);
+
+    }
     else if(ordem == 57){ //procura um membro de uma igreja dada
         //
         var membro_igreja_nome = $("#membro_igreja_nome").val();
         var membro_nome = $("#proc_membro_nome").val();
-        //
-        if (!membro_nome){
-            membro_nome = "";
-        }
         //
         //
         show_membros(ordem,membro_igreja_nome,membro_nome);
@@ -1269,8 +1535,17 @@ function envia(ordem){
         addRede(ordem,rede_cor,igreja_nome);
     }
 }
-
-
+function envia_edita_membro(ordem,cpf){
+    //
+    //função para editar um membro
+    //
+    $("#procura").empty();
+    $("#borda").empty();
+    var corpo = $("#mostra_membros_igrejas");
+    //
+    corpo.empty();
+    corpo.load('membro/edit_membro.php',{membro_cpf:cpf});
+}
 
 
 

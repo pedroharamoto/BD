@@ -20,6 +20,10 @@ else if($ordem == 3){
     //adc um membro
     addMembro($conn,$obj);
 }
+else if($ordem == 33){
+    //edita um membro
+    editMembro($conn,$obj);
+}
 else if($ordem == 57){
     //mostra um membro de uma igreja
     mostraMembro($conn,$obj);
@@ -137,6 +141,45 @@ function addIgreja($conn,$obj){
 //
 //**************************************************************//
 //**************************************************************//
+function editMembro($conn,$obj){
+    //
+    //função para editar um membro
+    //
+    $membro_nome        = $obj->membro_nome;
+    $membro_cpf         = $obj->membro_cpf;
+    $membro_nasc        = $obj->membro_nasc;
+    $membro_sexo        = $obj->membro_sexo;
+    $membro_email       = $obj->membro_email;
+    $membro_telefone    = $obj->membro_telefone;
+    $membro_rua         = $obj->membro_rua;
+    $membro_numero      = $obj->membro_numero;
+    $membro_complemento = $obj->membro_complemento;
+    $membro_cep         = $obj->membro_cep;
+    $membro_bairro      = $obj->membro_bairro;
+    $membro_cidade      = $obj->membro_cidade;
+    $membro_uf          = $obj->membro_uf;
+    //
+    $txt_dados  = "nome = '" . $membro_nome . "',";
+    $txt_dados  .= "cpf = " . $membro_cpf . ",";
+    $txt_dados  .= "data_nasc = DATE('" . $membro_nasc . "'),";
+    $txt_dados  .= "sexo = '" . $membro_sexo . "',";
+    $txt_dados  .= "email = '" . $membro_email . "',";
+    $txt_dados  .= "telefone = '" . $membro_telefone . "',";
+    $txt_dados  .= "rua = '" . $membro_rua . "',";
+    $txt_dados  .= "numero = '" . $membro_numero . "',";
+    $txt_dados  .= "complemento = '" . $membro_complemento . "',";
+    $txt_dados  .= "bairro = '" . $membro_bairro . "',";
+    $txt_dados  .= "cidade = '" . $membro_cidade . "',";
+    $txt_dados  .= "uf = '" . $membro_uf . "',";
+    $txt_dados  .= "cep = '" . $membro_cep . "'";
+
+
+    $sql = "UPDATE membros SET " . $txt_dados . " WHERE  cpf = '".$membro_cpf . "'";
+    //
+    $saida = ["msg",$sql];
+    //
+    echo json_encode($saida);
+}
 function mostraMembro($conn,$obj){
     //
     // o $saida para CONSULTAS são diferentes do $saida das inserções
@@ -155,12 +198,13 @@ function mostraMembro($conn,$obj){
     $condicao .= " membro_igreja.cpf_membro = membros.cpf";
     $condicao .= " AND membros.nome like '%" . $membro_nome . "%'";
 
-    $sql = "SELECT membros.nome nome, membros.cpf cpf FROM membros,membro_igreja WHERE " . $condicao;
+    $sql = "SELECT * FROM membros,membro_igreja WHERE " . $condicao;
     //
     $resultado = exQuery($conn,$sql);
     $saida = array();
     $saida = $resultado->fetch_all(MYSQLI_ASSOC);
     //
+    //$saida = ["msg"=>$sql];
     //
     echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
