@@ -1,0 +1,230 @@
+<!-- CORPO DO SITE -->
+<script type="text/javascript">
+  var header = $('#cabecalho');
+
+  header.empty();
+  header.append('<h1>Inserir Reunião de Célula.</h1>');
+</script>
+
+<div class="row border-bot">
+  <div class="col-md-12">
+      <p></p>
+  </div>
+</div>
+
+<div class="row">
+
+  <div class="col-md-12">
+
+    <div class="row">
+
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Igreja:</span>
+                    <div id="lista_igrejas">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div id="proc_igreja_rede">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Redes:</span>
+                        <div id="lista_redes">
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <p></p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Nome:</span>
+                    <input value="celula do vitorugo" id="cel_nome" type="text" class="form-control" placeholder="Nome da Célula" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+          <p></p>
+        </div>
+
+        <div class="row">
+          <div class="col-md-5">
+              <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">Rua:</span>
+                  <input value="Rua ahahahahahueryebd" id="cel_rua" type="text" class="form-control" placeholder="Rua" aria-describedby="basic-addon1">
+              </div>
+          </div>
+
+          <div class="col-md-2">
+              <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon1">N°:</span>
+                  <input value="87" id="cel_numero" type="text" class="form-control" placeholder="Número do local" aria-describedby="basic-addon1">
+              </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <p></p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Bairro:</span>
+                    <input value="Ayheuag" id="cel_bairro" type="text" class="form-control" placeholder="Bairro" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Complemento:</span>
+                    <input value="proximo a aanbagr" id="cel_complemento" type="text" class="form-control" placeholder="Complemento" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <p></p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Cidade:</span>
+                    <input value="Macatuba" id="cel_cidade" type="text" class="form-control" placeholder="Cidade" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">UF:</span>
+                    <select class="form-control" name="cel_uf" id="cel_uf">
+                        <option value="0">Selecione o Estado</option>
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <p></p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Dia da Semana:</span>
+                    <select class="form-control" name="cel_feira" id="cel_feira">
+                        <option value="0">Selecione o Dia da Semana</option>
+                        <option value="1">Segunda-Feira</option>
+                        <option value="2">Terça-Feira</option>
+                        <option value="3">Quarta-Feira</option>
+                        <option value="4">Quinta-Feira</option>
+                        <option value="5">Sexta-Feira</option>
+                        <option value="6">Sábado</option>
+                        <option value="7">Domingo</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Quantidade:</span>
+                    <input value="10" id="cel_quantidade" type="text" class="form-control" placeholder="Quantidade de Membros" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+      <p></p>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+      </div>
+      <div class="col-md-6">
+        <div class="alinhamento">
+          <input class="btn btn-success" id="btn_add_celula" onclick="envia(200)" type="button" value="Cadastrar"></input>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <p></p>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <a role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          + Info
+        </a>
+        <div class="collapse" id="collapseExample">
+          <div class="well">
+            <p class="recuo">
+                PÁGINA PARA ADICIONAR UMA CÉLULA.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <p></p>
+    </div>
+    <div class="col-md-1">
+        <p></p>
+    </div>
+    <div class="col-md-6">
+        <div id="plot">
+            <!-- retorno do ajax -->
+        </div>
+    </div>
+</div>
+
+
+<script type='text/javascript'>
+
+$(document).ready(function() {
+
+    show_lista_igrejas2();
+
+    });
+
+</script>

@@ -31,12 +31,16 @@ function showcelula(ordem, nome_igreja,rede_cor){
             //
             //recebo todos o resultado da query realizada, em formato JSON
             //
+            console.log(this.responseText);
+            //return;
             retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
             //
             //
+
+            //
             if(retorno.length == 0 || retorno == ""){
                 //não encontrou nenhum resultado
-                texto_retorno += "<p>Não há Líderes para esta igreja!";
+                texto_retorno += "<p>Não há Células para esta igreja!";
             }
             else{
                 //
@@ -806,14 +810,13 @@ function editMembro(ordem,membro_igreja,membro_nome,membro_cpf,membro_nasc,membr
             //
             retorno = JSON.parse(retorno);
             //
-            console.log(retorno);
-            //
-            if(retorno.msg === false){
-                texto_retorno = "ERRO!<br>"+membro_cpf+" já existe!";
+            if(retorno.msg == 0){
+                texto_retorno += "Edição concluída!";
             }
             else{
-                texto_retorno = "Membro " + membro_cpf + " cadastrado!";
+                texto_retorno += 'Erro!';
             }
+            //
             //
             $("#plot").append(texto_retorno);
         }

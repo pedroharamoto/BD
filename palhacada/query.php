@@ -188,11 +188,13 @@ function editMembro($conn,$obj){
     $txt_dados  .= "cep = '" . $membro_cep . "'";
 
 
-    $sql = "UPDATE membros SET " . $txt_dados . " WHERE  cpf = '".$membro_cpf . "'";
+    $sql = "UPDATE membros SET " . $txt_dados . " WHERE cpf = '".$membro_cpf . "'";
     //
-    $saida = ["msg",$sql];
+    $resultado = exQuery($conn,$sql);
     //
-    echo json_encode($saida);
+    $saida = ["msg"=>mysqli_errno($conn)];
+    //
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
 function mostraMembro($conn,$obj){
     //
@@ -438,7 +440,7 @@ function mostraCelulas($conn,$obj){
     $nome_igreja = $obj->nome_igreja;
     $condicao = "";
 
-    if($rede_cor != ""){
+    if($rede_cor != 0){
         $condicao .= " AND cor_rede = '" . $rede_cor . "'";
     }
     if($nome_igreja){
@@ -448,6 +450,9 @@ function mostraCelulas($conn,$obj){
     $sql = "SELECT * FROM rede_celula WHERE 1 " . $condicao;
 
     $saida = ["msg"=>$sql];
+
+
+    //echo json_encode($saida);
 
     $resultado = exQuery($conn,$sql);
     $saida = array();
