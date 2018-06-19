@@ -482,6 +482,8 @@ function addCel($conn,$obj){
     $cel_uf             = $obj->cel_uf;
     $cel_feira          = $obj->cel_feira;
     $cel_quantidade     = $obj->cel_quantidade;
+    $rede_cor           = $obj->rede_cor;
+    $membro_igreja_nome = $obj->membro_igreja_nome;
     //
     $txt_dados  = "('" . $cel_nome . "',";
     $txt_dados  .= "'" . $cel_rua . "',";
@@ -500,18 +502,20 @@ function addCel($conn,$obj){
     //
     if($resultado){
 
-
-
-        $saida = ["msg"=>$obj->igreja_rede];
-
-        echo json_encode($saida);
+        $txt_dados = "('" . $rede_cor . "',";
+        $txt_dados .= "'" . $membro_igreja_nome . "',";
+        $txt_dados .= "'" . $cel_nome . "',";
+        $txt_dados .= "'" . $cel_cidade . "',";
+        $txt_dados .= "'" . $cel_uf . "')";
 
         $sql = "INSERT INTO rede_celula (cor_rede,nome_igreja,nome_celula,cidade_celula,uf_celula) VALUES ". $txt_dados;
+
+        $resultado = exQuery($conn,$sql);
     }
     //
     $saida = ["msg"=>mysqli_errno($conn)];
     //
-    //echo json_encode($saida); //envio todos os dados encontrados em formato JSON
+    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
 //**************************************************************//
 //**************************************************************//

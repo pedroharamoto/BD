@@ -163,7 +163,7 @@ function edit_membro(ordem,cpf){
 //
 //
 //
-function addRede(ordem,rede_cor,igreja_nome,membro_cpf,igreja_nome,rede_cor){
+function addRede(ordem,rede_cor,igreja_nome,membro_cpf){
     //
     //função para criar uma REDE
     //
@@ -342,7 +342,7 @@ function show_celula(ordem,cel_nome,cel_cidade,cel_uf){
 //
 //
 //
-function addCel(ordem,cel_nome,cel_rua,cel_numero,cel_bairro,cel_complemento,cel_cidade,cel_uf,cel_feira,cel_quantidade){
+function addCel(ordem,cel_nome,cel_rua,cel_numero,cel_bairro,cel_complemento,cel_cidade,cel_uf,cel_feira,cel_quantidade,rede_cor,membro_igreja_nome){
     //
     //função para add uma celula
     //
@@ -356,7 +356,9 @@ function addCel(ordem,cel_nome,cel_rua,cel_numero,cel_bairro,cel_complemento,cel
         "cel_cidade" : cel_cidade,
         "cel_uf" : cel_uf,
         "cel_feira" : cel_feira,
-        "cel_quantidade" : cel_quantidade
+        "cel_quantidade" : cel_quantidade,
+        "rede_cor" : rede_cor,
+        "membro_igreja_nome" : membro_igreja_nome
     };
     //
     //
@@ -1675,8 +1677,19 @@ function envia(ordem){
         var cel_uf          = $("#cel_uf").val();
         var cel_feira       = $("#cel_feira").val();
         var cel_quantidade  = $("#cel_quantidade").val();
+        var rede_cor        = $("#igreja_rede").val();
+        var membro_igreja_nome = $("#membro_igreja_nome").val();
+
+        if(rede_cor == 0){
+            alert('Escolha uma rede');
+            return;
+        }
+        if(membro_igreja_nome == 0){
+            alert('Escolha a igreja');
+            return;
+        }
         //
-        addCel(ordem,cel_nome,cel_rua,cel_numero,cel_bairro,cel_complemento,cel_cidade,cel_uf,cel_feira,cel_quantidade);
+        addCel(ordem,cel_nome,cel_rua,cel_numero,cel_bairro,cel_complemento,cel_cidade,cel_uf,cel_feira,cel_quantidade,rede_cor,membro_igreja_nome);
     }
     else if(ordem == 201){ //mostra as celulas
 
@@ -1691,8 +1704,6 @@ function envia(ordem){
         var rede_cor    = $("#rede_cor").val();
         var igreja_nome = $("#membro_igreja_nome").val();
         var membro_cpf  = $("#membros_igreja").val();
-        var igreja_nome = $("#membro_igreja_nome").val();
-        var rede_cor    = $("#igreja_rede").val();
 
         if(rede_cor == ""){
             alert('É necessário informar uma cor!');
@@ -1706,7 +1717,7 @@ function envia(ordem){
             alert('É necessário informar um líder!');
             return;
         }
-        addRede(ordem,rede_cor,igreja_nome,membro_cpf,igreja_nome,rede_cor);
+        addRede(ordem,rede_cor,igreja_nome,membro_cpf);
     }else if(ordem == 302){
 
         var rede_cor    = $("#rede_cor").val();
