@@ -77,8 +77,6 @@ function showcelula(ordem, nome_igreja,rede_cor){
     xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
-
-
 }
 //
 //
@@ -215,8 +213,6 @@ function edit_membro(ordem,cpf){
 
             texto_retorno +=            '';
 
-
-
             texto_retorno +=        '</div>'
 
             texto_retorno +=    '</div>';
@@ -231,7 +227,6 @@ function edit_membro(ordem,cpf){
     xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
-
 
 }
 //
@@ -1010,7 +1005,6 @@ function show_lista_igrejas2(){
     xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
-
 }
 
 //
