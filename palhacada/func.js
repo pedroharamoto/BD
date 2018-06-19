@@ -120,7 +120,7 @@ function mostraRedes(ordem, rede_cor, nome_igreja, lider_nome){
             //
             if(retorno.length == 0 || retorno == ""){
                 //não encontrou nenhum resultado
-                texto_retorno += "<p>Não há Líderes para esta igreja!";
+                texto_retorno += "<p>Não há REDES para esta igreja!";
             }
             else{
                 //
@@ -1294,7 +1294,7 @@ function show_membros(ordem,membro_igreja_nome,membro_nome){
             //
             if(retorno.length == 0 || retorno == ""){
                 //não encontrou nenhum resultado
-                texto_retorno += "<p>Não há PASTORES nesta igreja!";
+                texto_retorno += "<p>Não há MEMBROS nesta igreja!";
             }
             else{
                 //
@@ -1439,15 +1439,53 @@ function show_igrejas(){
                 //encontrou
                 //irei criar a tabela para mostrar o resultado da query
                 //
-                texto_retorno += '<table class="table table-striped"><thead><tr><th>#</th><th>Nome</th><th>Cidade</th></tr></thead>';
+                texto_retorno += '<table class="table table-striped" style="width:100%;"><thead><tr><th style="width:30%;">Nome</th><th style="width:70%;">Cidade - UF</th></tr></thead>';
                 texto_retorno += '<tbody>';
                 //
                 for (i in retorno) {
 
+                    n = parseInt(parseInt(i)+1);
+
                     texto_retorno += '<tr>';
-                    texto_retorno += '<td>'+ parseInt(parseInt(i)+1) +'</td>';
-                    texto_retorno +='<td>'+retorno[i].nome+'</td>';
-                    texto_retorno +='<td>'+retorno[i].cidade+'</td>';
+                    texto_retorno += '<td><a role="button" data-toggle="collapse" href="#collapse'+n+'" aria-expanded="false" aria-controls="collapse'+n+'">';
+                    texto_retorno += '' + retorno[i].nome + '';
+                    texto_retorno += '</a></td>';
+                    texto_retorno +='<td>';
+
+                    texto_retorno += '' + retorno[i].cidade + ' - ' + retorno[i].uf;
+                    texto_retorno += '<div class="collapse" id="collapse'+n+'">';
+                    texto_retorno +=    '<div class="well">';
+                    texto_retorno +=        '<p class="recuo">';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Rua:</b> '+ retorno[i].rua + '';
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Número:</b> ' + retorno[i].numero;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Complemento:</b> ' + retorno[i].complemento;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Bairro:</b> ' + retorno[i].bairro;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>CEP:</b> ' + retorno[i].cep;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=        '<p class="recuo">';
+                    texto_retorno +=            '<b>Qte de Membros:</b> ' + retorno[i].n_membros;
+                    texto_retorno +=        '</p>';
+
+                    texto_retorno +=    '</div>';
+                    texto_retorno += '</div>';
+
+                    texto_retorno += '</td>';
+
                     texto_retorno += '</tr>';
 
                 }
