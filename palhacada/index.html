@@ -8,11 +8,13 @@
 
          <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
 
-         <title>IGREJA DO VITOR</title>
+         <title>Sistema BDI</title>
 
          <link rel="stylesheet" href="css/bootstrap.css">
          <!-- <link rel="stylesheet" href="css/bootstrap-responsive.css"> -->
          <link rel="stylesheet" href="css/style.css">
+
+         <link href="https://fonts.googleapis.com/css?family=Tajawal" rel="stylesheet">
 
          <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
          <script type="text/javascript" src="js/bootstrap.js"></script>
@@ -20,62 +22,51 @@
          <!-- 1. Add these JavaScript inclusions in the head of your page -->
 
          <script type="text/javascript" src="func.js"></script> <!-- funções da pagina -->
-         <script type="text/javascript" src="js/math.js"></script> <!-- biblioteca math.js -->
      </div>
   </head>
 
   <body>
-    <div id="nav">
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container-fluid">
-              <!-- Brand and toggle get grouped for better mobile display -->
-              <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                  <span class="sr-only">Toggle Navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">Início</a>
-              </div>
+    <div class="filter"></div>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <a class="navbar-start" href="index.html">Início</a>
 
-              <!-- Collect the nav links, forms, and other content for toggling -->
-              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse">
 
-                <ul id="nave" class="nav navbar-nav">
-                    <li><a onclick="carregar('igreja/add_igreja.html')">Add Igreja</a></li>
-                    <li><a onclick="carregar('igreja/show_igreja.html')">Igrejas</a></li>
-
-                    <li><a onclick="carregar('culto/add_culto.html')">Add Culto</a></li>
-                    <li><a onclick="carregar('culto/show_culto.html')">Cultos</a></li>
-
-                    <li><a onclick="carregar('membro/add_membro.html')">Add Membro</a></li>
-                    <li><a onclick="carregar('membro/show_membro.html')">Membros</a></li>
-
-                    <li><a onclick="carregar('pastor/add_pastor.html')">Add Pastor</a></li>
-                    <li><a onclick="carregar('pastor/show_pastor.html')">Pastores</a></li>
-
-                    <li><a onclick="carregar('rede/add_rede.html')">Add Rede</a></li>
-                    <li><a onclick="carregar('rede/show_rede.html')">Redes</a></li>
-
-                    <li><a onclick="carregar('celula/add_celula.html')">Add Célula</a></li>
-                    <li><a onclick="carregar('celula/show_celula.html')">Células</a></li>
-                </ul>
-
-
-              </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
-          </nav>
-    </div>
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <button class="dropbtn">Inserir</button>
+                <div class="dropdown-content">
+                  <a onclick="carregar('igreja/add_igreja.html')">Igreja</a>
+                  <a onclick="carregar('culto/add_culto.html')">Culto</a>
+                  <a onclick="carregar('membro/add_membro.html')">Membro</a>
+                  <a onclick="carregar('pastor/add_pastor.html')">Pastor</a>
+                  <a onclick="carregar('rede/add_rede.html')">Rede</a>
+                  <a onclick="carregar('celula/add_celula.html')">Célula</a>
+                </div>
+              </li>
+              <li class="dropdown">
+                <button class="dropbtn">Mostrar</button>
+                <div class="dropdown-content">
+                  <a onclick="carregar('igreja/show_igreja.html')">Igrejas</a>
+                  <a onclick="carregar('culto/show_culto.html')">Cultos</a>
+                  <a onclick="carregar('membro/show_membro.html')">Membros</a>
+                  <a onclick="carregar('pastor/show_pastor.html')">Pastores</a>
+                  <a onclick="carregar('rede/show_rede.html')">Redes</a>
+                  <a onclick="carregar('celula/show_celula.html')">Células</a>
+                </div>
+              </li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
 
 
-    <header class="jumbotron">
-      <div class="container">
-        <div id="cabecalho">
-          <h1>IGREJA DO VITOR</h1>
-          <p>descrição xdxdxdx</p>
-        </div>
-      </div>
+    <header class="jumbotron" id="cabecalho">
+      <h1>TRABALHO DE BD I</h1>
+      <p>Web site desenvolvido para manipular um  banco de dados para a máteria de Banco de Dados I.</p>
     </header>
 
     <!-- CORPO DO SITE -->
@@ -91,22 +82,14 @@
       </div>
     </div>
 
-
-
-    <div id="footer">
-        <footer class="footer">
-          <div class="container">
-            <p class="pull-right"><a href="#">Voltar ao topo</a></p>
-            <p>Projeto construído utilizando o Twitter Bootstrap, PHP, MySQL, JQuery.</p>
-            <br>
-            <p><a href="http://glyphicons.com">Glyphicons grátis</a> licenciado sob <a href="http://creativecommons.org/licenses/by/3.0/">CC 3.0</a>.</p>
-            <br>
-            <p> João Pedro Marin Comini, RA: 161020551</p>
-            <p> Pedro Vitor Jhum Haramoto, RA: 161024157 </p>
-            <p> Vitor de Souza Cruzeiro, RA:  161025935</p>
-          </div>
-        </footer>
-    </div>
+    <footer class="footer">
+      <div class="container">
+        <p> João Pedro Marin Comini, RA: 161020551</p>
+        <p> Pedro Vitor Jhum Haramoto, RA: 161024157 </p>
+        <p> Vitor de Souza Cruzeiro, RA:  161025935</p>
+        <p>Projeto construído utilizando o Twitter Bootstrap, PHP, MySQL, JQuery.</p>
+      </div>
+    </footer>
 
   </body>
 </html>
