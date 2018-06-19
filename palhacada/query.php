@@ -536,7 +536,7 @@ function mostraRedes($conn, $obj){
     $condicoes = "";
     //
     if($nome_igreja != 0){
-        $condicoes .= " AND rede.nome_igreja = '. $nome_igreja .'";
+        $condicoes .= " AND rede.nome_igreja = ". $nome_igreja . "";
     }
     if($rede_cor != ""){
         $condicoes .= " AND rede.cor like '%" . $rede_cor . "%'";
