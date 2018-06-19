@@ -163,7 +163,7 @@ function edit_membro(ordem,cpf){
 //
 //
 //
-function addRede(ordem,rede_cor,igreja_nome,membro_cpf){
+function addRede(ordem,rede_cor,igreja_nome,membro_cpf,igreja_nome,rede_cor){
     //
     //função para criar uma REDE
     //
@@ -876,6 +876,67 @@ function addIgreja(ordem,igreja_nome,igreja_qte_membros,igreja_rua,igreja_numero
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
 }
+//
+function show_lista_igrejas2(){
+    //
+    //função para listar as igrejas na pagina de membros
+    //
+    var dados = {
+            "funcao" : 2
+    };
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var texto_retorno = ""; //corpo da div
+    //
+    //aqui vai começar o codigo para o AJAX-PHP
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            //
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //
+            //
+            texto_retorno += '<select class="form-control" name="membro_igreja_nome" id="membro_igreja_nome">';
+            if(retorno.length == 0){
+                //não encontrou nenhum resultado
+                texto_retorno += "<option value=0>Não há igrejas cadastradas!</option>";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                //
+                texto_retorno += '<option value=0>Selecione a igreja</option>';
+                for (i in retorno) {
+                    texto_retorno += '<option value="'+retorno[i].nome+'">'+retorno[i].nome+','+retorno[i].cidade+ '</option>';
+                }
+            }
+            texto_retorno += '</select>';
+            $("#lista_igrejas").append(texto_retorno);
+
+            $("#membro_igreja_nome").change(function(){
+                show_lista_redes($(this).val());
+            });
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+
+}
+
 //
 function show_lista_igrejas(){
     //
@@ -1630,6 +1691,8 @@ function envia(ordem){
         var rede_cor    = $("#rede_cor").val();
         var igreja_nome = $("#membro_igreja_nome").val();
         var membro_cpf  = $("#membros_igreja").val();
+        var igreja_nome = $("#membro_igreja_nome").val();
+        var rede_cor    = $("#igreja_rede").val();
 
         if(rede_cor == ""){
             alert('É necessário informar uma cor!');
@@ -1643,7 +1706,7 @@ function envia(ordem){
             alert('É necessário informar um líder!');
             return;
         }
-        addRede(ordem,rede_cor,igreja_nome,membro_cpf);
+        addRede(ordem,rede_cor,igreja_nome,membro_cpf,igreja_nome,rede_cor);
     }else if(ordem == 302){
 
         var rede_cor    = $("#rede_cor").val();
@@ -1664,7 +1727,68 @@ function envia_edita_membro(ordem,cpf){
     corpo.empty();
     corpo.load('membro/edit_membro.php',{membro_cpf:cpf});
 }
+//
+//
+//
+function show_lista_redes(nome_igreja){
+    //
+    $("#lista_redes").empty();
+    var dados = {
+            "funcao" : 202,
+            "nome_igreja" : nome_igreja
+    };
+    //
+    parametros = JSON.stringify(dados);
+    //
+    var texto_retorno = ""; //corpo da div
+    //
+    //aqui vai começar o codigo para o AJAX-PHP
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            //
+            console.log(this.responseText);
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //
+            //
+            texto_retorno += '<select class="form-control" name="igreja_rede" id="igreja_rede">';
+            if(retorno.length == 0){
+                //não encontrou nenhum resultado
+                texto_retorno += "<option value=0>Não há Redes nesta igreja!</option>";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                texto_retorno += '<option value=0>Selecione a Rede</option>';
+                for (i in retorno) {
+                    texto_retorno += '<option value="'+retorno[i].cor+'">'+retorno[i].lider+' - '+retorno[i].cor+ '</option>';
+                }
+            }
+            texto_retorno += '</select>';
+            $("#lista_redes").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
 
+}
+
+//
+//
+//
 function show_lista_membros_igreja(nome_igreja){
     //
     $("#lista_membros").empty();

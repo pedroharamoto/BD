@@ -56,6 +56,10 @@ else if($ordem == 201){
     //mostra as celulas
     mostraCel($conn,$obj);
 }
+else if($ordem == 202){
+    //mostra as celulas
+    mostraRedes_cel($conn,$obj);
+}
 else if($ordem == 300){
     //add uma Rede
     addRede($conn,$obj);
@@ -424,6 +428,20 @@ function addCulto($conn,$obj){
 //
 //**************************************************************//
 //**************************************************************//
+function mostraRedes_cel($conn,$obj){
+
+    $nome_igreja = $obj->nome_igreja;
+
+
+    $sql = "SELECT cor, lider FROM rede WHERE nome_igreja = '" . $nome_igreja . "'";
+
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    //
+    echo json_encode($saida);
+}
 function mostraCel($conn,$obj){
     //
     //mostra os cultos
@@ -479,9 +497,21 @@ function addCel($conn,$obj){
 
     $resultado = exQuery($conn,$sql);
     //
+    //
+    if($resultado){
+
+
+
+        $saida = ["msg"=>$obj->igreja_rede];
+
+        echo json_encode($saida);
+
+        $sql = "INSERT INTO rede_celula (cor_rede,nome_igreja,nome_celula,cidade_celula,uf_celula) VALUES ". $txt_dados;
+    }
+    //
     $saida = ["msg"=>mysqli_errno($conn)];
     //
-    echo json_encode($saida); //envio todos os dados encontrados em formato JSON
+    //echo json_encode($saida); //envio todos os dados encontrados em formato JSON
 }
 //**************************************************************//
 //**************************************************************//
@@ -536,7 +566,7 @@ function mostraRedes($conn, $obj){
     $condicoes = "";
     //
     if($nome_igreja != 0){
-        $condicoes .= " AND rede.nome_igreja = ". $nome_igreja . "";
+        $condicoes .= " AND rede.nome_igreja = ". $nome_igreja . "" ;
     }
     if($rede_cor != ""){
         $condicoes .= " AND rede.cor like '%" . $rede_cor . "%'";
