@@ -59,6 +59,12 @@ else if($ordem == 201){
 else if($ordem == 300){
     //add uma Rede
     addRede($conn,$obj);
+}else if($ordem == 301) {
+    //lista membros de uma igreja em especifico
+    mostraMembrosIgreja($conn, $obj);
+}else if($ordem == 302){
+    //Mostra REDES
+    mostraRedes($conn, $obj);
 }
 //**************************************************************//
 //**************************************************************//
@@ -491,31 +497,61 @@ function addRede($conn,$obj){
 
     $rede_cor       = $obj->rede_cor;
     $igreja_nome    = $obj->igreja_nome;
+    $membro_cpf     = $obj->membro_cpf;
 
-    $txt_dados = "('" . $rede_cor . "')";
+    $txt_dados = "('" . $rede_cor . "',";
+    $txt_dados .= "'" . $igreja_nome . "',";
+    $txt_dados .= ""  . $membro_cpf . ")";
 
-    $sql = "INSERT INTO rede (cor) VALUES " . $txt_dados;
+    $sql = "INSERT INTO rede (cor,nome_igreja,lider) VALUES " . $txt_dados;
     //
     $resultado = exQuery($conn,$sql);
     //
-    //se resultado == true, então linka rede a igreja
+    $saida = ["msg"=>mysqli_errno($conn)];
     //
-    if($resultado){
-        //TEM Q CRIAR A TABELA DESSA RELAÇÃO
-        $id_rede = mysqli_insert_id($conn); //essa função retorna o ID da inserção anterior.
-        //o ID tem q ser AUTO INCREMENT
-        $txt_dados = "";
-        //
-        $txt_dados .= "('" . $igreja_nome . "',";
-        $txt_dados .= "" . $id_rede . ")";
-        //
-        $sql = "INSERT INTO rede_igreja (nome_igreja,rede_id) VALUES " . $txt_dados;
-        //
-        $resultado = exQuery($conn,$sql);
-        //
+    echo json_encode($saida);
+}
+
+function mostraMembrosIgreja($conn, $obj){
+
+    $nome_igreja  = $obj->nome_igreja;
+    //
+    $sql = "SELECT membros.nome nome, membros.cpf cpf FROM membros,membro_igreja WHERE membro_igreja.nome_igreja = '". $nome_igreja . "' AND membros.cpf = membro_igreja.cpf_membro";
+    //
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    //
+    echo json_encode($saida);
+
+}
+
+function mostraRedes($conn, $obj){
+
+    $nome_igreja = $obj->nome_igreja;
+    $rede_cor = $obj->rede_cor;
+    $lider_nome = $obj->lider_nome;
+
+    $condicoes = "";
+    //
+    if($nome_igreja != 0){
+        $condicoes .= " AND rede.nome_igreja = '. $nome_igreja .'";
+    }
+    if($rede_cor != ""){
+        $condicoes .= " AND rede.cor like '%" . $rede_cor . "%'";
+    }
+    if($lider_nome != "0"){
+        $condicoes .= "AND membros.nome LIKE '%" . $lider_nome . "%'";
     }
     //
-    $saida = ["msg"=>mysqli_errno($conn)];
+    $sql = "SELECT * FROM rede, membros where membros.cpf = rede.lider " . $condicoes;
+    //
+    //$resultado = exQuery($conn,$sql);
+    //$saida = array();
+    //$saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    $saida= ["msg"=>$sql];
     //
     echo json_encode($saida);
 }
