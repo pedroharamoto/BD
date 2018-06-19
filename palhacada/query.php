@@ -74,6 +74,10 @@ else if($ordem == 300){
     //Mostra REDES
     mostraRedes($conn, $obj);
 }
+else if($ordem == 978){
+    //mostra celulas em edit membros
+    shw_celula($conn,$obj);
+}
 //**************************************************************//
 //**************************************************************//
 //
@@ -155,6 +159,16 @@ function addIgreja($conn,$obj){
 //
 //**************************************************************//
 //**************************************************************//
+function shw_celula($conn,$obj){
+
+    $sql = "SELECT * FROM rede_celula WHERE nome_igreja = '" . $obj->nome_igreja . "'";
+    //
+    $resultado = exQuery($conn,$sql);
+    $saida = array();
+    $saida = $resultado->fetch_all(MYSQLI_ASSOC);
+    //
+    echo json_encode($saida);
+}
 function editMembro($conn,$obj){
     //
     //função para editar um membro

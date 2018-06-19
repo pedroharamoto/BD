@@ -198,7 +198,7 @@ $ufs = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA",
                     $igrejas = $busc_igreja->fetch_all(MYSQLI_ASSOC);
                     //
                     $opt = '<select class="form-control" name="membro_igreja" id="membro_igreja">';
-                    $opt .= '<option value="0">Selecione o Estado</option>';
+                    $opt .= '<option value="0">Selecione a Igreja</option>';
                     //
                     foreach ($igrejas as $ig) {
                         if($ig["nome"] == $saida[0]["nome_igreja"]){
@@ -215,6 +215,21 @@ $ufs = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA",
                     ?>
                 </div>
             </div>
+
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Células:</span>
+                        <div id="lista_celulas">
+
+                        </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                  <input class="btn btn-success" id="btn_salva_celula" onclick="envia(584)" type="button" value="Salva"></input>
+            </div>
+
+
         </div>
 
     </div>
@@ -267,7 +282,86 @@ $ufs = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA",
         </div>
     </div>
 </div>
+<script type='text/javascript'>
 
+    $(document).ready(function() {
+
+        $("#membro_igreja").change(function(){
+            show_lista_celula_igreja($(this).val());
+        });
+
+    });
+
+    function show_lista_celula_igreja(nome_igreja){
+        //
+        //função para listar as igrejas na pagina de membros
+        //
+        $("#lista_celulas").empty();
+        //
+        var dados = {
+                "funcao" : 978,
+                "nome_igreja" : nome_igreja
+        };
+        //
+        parametros = JSON.stringify(dados);
+        //
+        var texto_retorno = ""; //corpo da div
+        //
+        //aqui vai começar o codigo para o AJAX-PHP
+        //
+        var xmlhttp = new XMLHttpRequest();
+        //
+        //aqui estará o retorno
+        //
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //
+                //recebo todos o resultado da query realizada, em formato JSON
+                //
+                console.log(this.responseText);
+                //
+                retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+                //
+                //
+                var j = 0;
+                //
+                texto_retorno += '<select class="form-control" name="celulas" id="celulas">';
+                if(retorno.length == 0){
+                    //não encontrou nenhum resultado
+                    texto_retorno += "<option value=0>Não há celulas cadastradas!</option>";
+                }
+                else{
+                    //
+                    //encontrou
+                    //irei criar a tabela para mostrar o resultado da query
+                    //
+                    //
+                    texto_retorno += '<option value=0>Selecione a célula</option>';
+                    for (i in retorno) {
+                        j = j + 1;
+                        texto_retorno += '<option value="'+j+'">'+retorno[i].nome_celula+','+retorno[i].cidade_celula+ ' - ' + retorno[i].uf_celula + '</option>';
+                    }
+                    j = 0;
+                    for(i in retorno){
+                        j = j + 1;
+                        texto_retorno += '<input type="hidden" value="'+retorno[i].nome_celula+'" id="nome_cel'+j+'">';
+                        texto_retorno += '<input type="hidden" value="'+retorno[i].cidade_celula+'" id="cidade_cel'+j+'">';
+                        texto_retorno += '<input type="hidden" value="'+retorno[i].uf_celula+'" id="uf_cel'+j+'">';
+                    }
+                }
+                texto_retorno += '</select>';
+                $("#lista_celulas").append(texto_retorno);
+
+            }
+        };
+        //
+        //
+        //
+        xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+    }
+</script>
 <?php
 
 

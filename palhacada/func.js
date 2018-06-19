@@ -8,6 +8,64 @@ function carregar(pagina){
 //
 //
 //
+function addMembroCelula(ordem,nome_igreja,membro_cpf,nome_celula,cidade_celula,uf_celula){
+    $("#plot").empty();
+    //
+    var dados = {
+        "funcao" : ordem,
+        "membro_cpf" : membro_cpf,
+        "nome_celula" : nome_celula,
+        "cidade_celula" : cidade_celula,
+        "uf_celula" : uf_celula
+    }
+    //
+    texto_retorno = "";
+    //
+    var parametros = JSON.stringify(dados);
+    console.log(parametros);
+    return;
+    //
+    var xmlhttp = new XMLHttpRequest();
+    //
+    //aqui estará o retorno
+    //
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //
+            //recebo todos o resultado da query realizada, em formato JSON
+            //
+            console.log(this.responseText);
+            //return;
+            retorno = JSON.parse(this.responseText); //vou analisar cada elemento JSON retornado
+            //
+            //
+
+            //
+            if(retorno.length == 0 || retorno == ""){
+                //não encontrou nenhum resultado
+                texto_retorno += "!";
+            }
+            else{
+                //
+                //encontrou
+                //irei criar a tabela para mostrar o resultado da query
+                //
+                texto_retorno += "a";
+            }
+            $("#plot").append(texto_retorno);
+        }
+    };
+    //
+    //
+    //
+    xmlhttp.open("POST", "query.php", true); //abro o arquivo PHP
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send("data=" + parametros); //passo os dados(json) para o arquivo
+
+}
+//
+//
+//
 function showcelula(ordem, nome_igreja,rede_cor){
     //
     $("#mostra_celulas").empty();
@@ -1827,8 +1885,34 @@ function envia(ordem){
         if(!rede_cor){
             rede_cor = "";
         }
-
         showcelula(ordem,igreja_nome,rede_cor);
+    }
+    else if(ordem == 584){
+        //
+        //add um membro à celula
+        //
+        var membro_cpf = $("#membro_cpf").val();
+        //
+        var id = $("#celulas").val();
+        //
+        var nome_celula     = $("#nome_cel"+id).val();
+        var cidade_celula   = $("#cidade_cel"+id).val();
+        var uf_celula       = $("#uf_cel"+id).val();
+        //
+        if(!nome_celula){
+            alert("selecione uma celula");
+            return;
+        }
+        if(!cidade_celula){
+            alert("selecione uma celula");
+            return;
+        }
+        if(!uf_celula){
+            alert("selecione uma celula");
+            return;
+        }
+        //
+        addMembroCelula(ordem,membro_cpf,nome_celula,cidade_celula,uf_celula);
     }
 }
 function envia_edita_membro(ordem,cpf){
