@@ -50,10 +50,12 @@ CREATE TABLE `membros` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `rede` (
-  `cod_rede` int(11) NOT NULL AUTO_INCREMENT,
   `cor` varchar(15) NOT NULL,
-  PRIMARY KEY (`cod_rede`),
-  UNIQUE (`cod_rede`)
+  `nome_igreja` varchar(255) NOT NULL,
+  `lider` bigint NOT NULL,
+  PRIMARY KEY (`cor`, `nome_igreja`),
+  CONSTRAINT `igreja_rede_FK` FOREIGN KEY (`nome_igreja`) REFERENCES `igreja` (`nome`),
+  CONSTRAINT `lider_rede_FK` FOREIGN KEY (`lider`) REFERENCES `membros` (`cpf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- RELAÇÕES:
@@ -97,22 +99,16 @@ CREATE TABLE `reuniao_celula` (
   CONSTRAINT `reuniao_celula_FK` FOREIGN KEY (`nome_celula`, `cidade_celula`, `uf_celula`) REFERENCES `celula` (`nome`, `cidade`, `uf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `lider_rede` (
-  `cpf_membro` bigint NOT NULL,
-  `cod_rede` int NOT NULL, 
-  PRIMARY KEY (`cpf_membro`, `cod_rede`),
-  CONSTRAINT `lide_rede_cpf_FK` FOREIGN KEY (`cpf_membro`) REFERENCES `membros` (`cpf`),
-  CONSTRAINT `lide_rede_cod_FK` FOREIGN KEY (`cod_rede`) REFERENCES `rede` (`cod_rede`) 
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `rede_celula` (
-  `cod_rede` int NOT NULL,
+  `cor_rede` varchar(15) NOT NULL,
+  `nome_igreja` varchar(255) NOT NULL,
   `nome_celula` varchar(255) NOT NULL,
   `cidade_celula` VARCHAR(255) NOT NULL ,
   `uf_celula` VARCHAR(2) NOT NULL ,
-  PRIMARY KEY (`nome_celula`, `cidade_celula`, `uf_celula`, `cod_rede`),
+  PRIMARY KEY (`nome_celula`, `cidade_celula`, `uf_celula`, `cor_rede`, `nome_igreja`),
   CONSTRAINT `rede_celula_FK` FOREIGN KEY (`nome_celula`, `cidade_celula`, `uf_celula`) REFERENCES `celula` (`nome`, `cidade`, `uf`),
-  CONSTRAINT `rede_celula_cod_FK` FOREIGN KEY (`cod_rede`) REFERENCES `rede` (`cod_rede`)
+  CONSTRAINT `rede_celula_cor_FK` FOREIGN KEY (`cor_rede`) REFERENCES `rede` (`cor`),
+  CONSTRAINT `rede_celula_igreja_FK` FOREIGN KEY (`nome_igreja`) REFERENCES `igreja` (`nome`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `lider_celula` (

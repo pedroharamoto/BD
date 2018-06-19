@@ -55,3 +55,22 @@ BEGIN
 	cidade = NEW.cidade_celula;
 END $$
 DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER `contador_membros_cascade` 
+BEFORE DELETE ON `membros`
+FOR EACH ROW 
+BEGIN
+ 	UPDATE celula left join membro_celula on membro_celula.cpf_membro = OLD.cpf
+	SET n_membros = n_membros - 1
+	WHERE
+	celula.nome = membro_celula.nome_celula and 
+	celula.cidade = membro_celula.cidade_celula and 
+	celula.uf = membro_celula.uf_celula;
+	UPDATE igreja left join membro_igreja on membro_igreja.cpf_membro = OLD.cpf
+	SET n_membros = n_membros - 1
+	WHERE
+	igreja.nome = membro_igreja.nome_igreja;
+END $$
+DELIMITER ;
+
